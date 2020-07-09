@@ -1,0 +1,6 @@
+<complexType name = "ChangeMapRequest">
+  <sequence>
+    <element name = "weightRate" type = "u8" />
+    <element name = "z" type = "u16" />
+  </sequence>
+</packet>

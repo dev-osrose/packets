@@ -1,0 +1,19 @@
+<includeXml path = "packets/accept_request.xml" />
+<includeXml path = "packets/alive_request.xml" />
+<includeXml path = "packets/allied_chat_request.xml" />
+<includeXml path = "packets/allied_shout_chat_request.xml" />
+<includeXml path = "packets/appraisal_request.xml" />
+<includeXml path = "packets/attack_request.xml" />
+<includeXml path = "packets/bank_list_request.xml" />
+
+<complexType name = "Request">
+    <choice>
+        <element name = "accept" type = "AcceptRequest" />
+        <element name = "alive" type = "AliveRequest" />
+        <element name = "allied_chat" type = "AlliedChatRequest" />
+        <element name = "allied_shout_chat" type = "AlliedShoutChatRequest" />
+        <element name = "appraisal" type = "AppraisalRequest" />
+        <element name = "attack" type = "AttackRequest" />
+        <element name = "bank_list" type = "BankListRequest" />
+    </choice>
+</complexType>
