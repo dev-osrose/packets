@@ -1,0 +1,11 @@
+<includeXml path = "item.xml" />
+<includeXml path = "bank_move_mode.xml" />
+
+<complexType name = "BankMoveRequest">
+    <sequence>
+        <element name = "mode" type = "BankMoveMode" />
+        <element name = "index" type = "u8" />
+        <element name = "item" type = "Item" />
+        <element name = "use_special_tab" type = "bool" />
+    </sequence>
+</complexType>

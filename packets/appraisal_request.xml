@@ -1,0 +1,6 @@
+<complexType name = "AppraisalRequest">
+    <sequence>
+        <element name = "index" type = "u16" />
+    </sequence>
+</complexType>
+

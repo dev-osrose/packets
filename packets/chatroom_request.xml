@@ -1,0 +1,23 @@
+<complexType name = "CreateChatroom">
+    <sequence>
+        <element name = "max_users" type = "u8" />
+        <element name = "title" type = "string" />
+        <element name = "password" type = "string" optional = "true" />
+    </sequence>
+</complexType>
+
+<complexType name = "JoinChatroom">
+    <sequence>
+        <element name = "id" type = "i16" />
+        <element name = "password" type = "string" optional = "true" />
+    </sequence>
+</complexType>
+
+<complexType name = "ChatroomRequest">
+    <choice>
+        <element name = "create" type = "CreateChatroom" />
+        <element name = "join" type = "JoinChatroom" />
+        <element name = "list_from_id" type = "i16" />
+        <element name = "kick_user_hash" type = "u32" />
+    </choice>
+</complexType>

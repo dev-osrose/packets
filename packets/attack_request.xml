@@ -1,0 +1,5 @@
+<complexType name = "AttackRequest">
+  <sequence>
+    <element name = "targetId" type = "u16" />
+  </sequence>
+</complexType>
