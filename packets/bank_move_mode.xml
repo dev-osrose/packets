@@ -1,0 +1,6 @@
+<simpleType name = "BankMoveMode">
+    <restriction base = "u8">
+        <enumeration value = "INVENTORY_TO_BANK" />
+        <enumeration value = "BANK_TO_INVENTORY" />
+    </restriction>
+</simpleType>

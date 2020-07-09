@@ -1,0 +1,8 @@
+<includeXml path = "bank_move_move.xml" />
+
+<complexType name = "BankMoveMoneyRequest">
+    <sequence>
+        <element name = "mode" type = "BankMoveMode" />
+        <element name = "amount" type = "i64" />
+    </sequence>
+</packet>

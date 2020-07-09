@@ -1,0 +1,5 @@
+<complexType name = "ChatroomMessageRequest">
+    <sequence>
+        <element name = "message" type = "string" />
+    </sequence>
+</complexType>
