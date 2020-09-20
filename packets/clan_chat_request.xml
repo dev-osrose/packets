@@ -1,5 +1,0 @@
-<complexType name = "ClanChatRequest">
-    <sequence>
-        <element name = "message" type = "string" />
-    </sequence>
-</complexType>

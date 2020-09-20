@@ -1,5 +1,0 @@
-<complexType name = "BankListRequest">
-    <sequence>
-        <element name = "password" type = "string" />
-    </sequence>
-</complexType>

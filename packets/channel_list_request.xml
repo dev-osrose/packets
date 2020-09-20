@@ -1,5 +1,0 @@
-<complexType name = "ChannelListRequest">
-    <sequence>
-        <element name = "serverId" type = "u32" />
-    </sequence>
-</packet>

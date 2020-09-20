@@ -22,9 +22,9 @@ function(GENERATE_PACKETS SRCS HDRS)
   set(${HDRS})
   foreach(IDLFILES ${ARG_IDLFILES})
 
-    # ensure that the file ends with .xml
-    string(REGEX MATCH "\\.xml$$" XMLEND ${IDLFILES})
-    if(NOT XMLEND)
+    # ensure that the file ends with .proto
+    string(REGEX MATCH "\\.xml$$" PROTOEND ${IDLFILES})
+    if(NOT PROTOEND)
       message(SEND_ERROR "idl file '${IDLFILES}' does not end with .xml")
     endif()
 
@@ -78,7 +78,7 @@ function(GENERATE_PACKETS SRCS HDRS)
       OUTPUT "${H_FILE}" "${CXX_FILE}"
       COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_OUTPATH}
       COMMAND ${CMAKE_COMMAND} -E make_directory ${HDR_OUTPATH}
-      COMMAND utils::packet_generator "${MATCH_PATH}" -h "${HDR_OUTPATH}" -c "${SRC_OUTPATH}" -g cpp
+      COMMAND utils::packet_generator "${MATCH_PATH}" -h "${HDR_OUTPATH}" -c "${SRC_OUTPATH}"
       DEPENDS ${ABS_FILE} utils::packet_generator
       COMMENT "Running C++ packetGenerator compiler on ${MATCH_PATH} with root ${IDLROOT}, generating: ${CXX_FILE}, ${H_FILE}"
       VERBATIM)

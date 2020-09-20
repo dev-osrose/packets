@@ -1,5 +1,0 @@
-<complexType name = "AlliedChatRequest">
-    <sequence>
-        <element name = "message" type = "string" />
-    </sequence>
-</complexType>
