@@ -255,6 +255,16 @@ target_link_libraries(${PROJECT}
   osIROSE-common-core
 )
 
+foreach(FILE ${SOURCES_HEADER})
+    set_target_properties(${PROJECT} PROPERTIES
+    PUBLIC_HEADER ${FILE})
+endforeach()
+
+foreach(FILE ${PACKET_HEADERS})
+    set_target_properties(${PROJECT} PROPERTIES
+    PUBLIC_HEADER ${FILE})
+endforeach()
+
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCES_BASE})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILES ${SOURCES_HEADER})
 source_group(TREE ${CMAKE_GEN_SRC_DIR}/packets PREFIX "Packet Source Files" FILES ${PACKET_SOURCES})

@@ -59,10 +59,12 @@ add_subdirectory(src)
 install(TARGETS osIROSE-common-core
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include
   INCLUDES DESTINATION src/core/include
 )
 install(TARGETS osIROSE-common-rosecommon
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include
   INCLUDES DESTINATION src/rosecommon/include ${CMAKE_GEN_SRC_DIR}/packets
 )

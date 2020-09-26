@@ -25,7 +25,6 @@ set(SOURCES_BASE
 add_library(${PROJECT} STATIC ${SOURCES_BASE} ${SOURCES_HEADER})
 target_include_directories(${PROJECT}
     PUBLIC
-    $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_GEN_SRC_DIR}>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     )
@@ -34,5 +33,10 @@ target_link_libraries(${PROJECT}
     INTERFACE
     ${CMAKE_THREAD_LIBS_INIT}
     )
+
+foreach(FILE ${SOURCES_HEADER})
+    set_target_properties(${PROJECT} PROPERTIES
+    PUBLIC_HEADER ${FILE})
+endforeach()
 
 set_property(TARGET ${PROJECT} PROPERTY FOLDER "Common")
