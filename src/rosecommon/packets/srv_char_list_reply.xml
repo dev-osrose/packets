@@ -1,6 +1,7 @@
 <packet ePacketType = "PAKCC_CHAR_LIST_REPLY">
     <element name = "characters" type = "CharInfo" occurs = "unbounded" occursSize = "uint8_t" ref = "true" default = "none" />
     <include path = "dataconsts.h" />
+    <include path = "array" system = "true" />
 
     <include path = "string" system = "true" />
     <includeXml path = "equipped_position.xml" />

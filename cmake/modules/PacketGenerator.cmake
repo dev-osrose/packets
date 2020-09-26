@@ -22,9 +22,9 @@ function(GENERATE_PACKETS SRCS HDRS)
   set(${HDRS})
   foreach(IDLFILES ${ARG_IDLFILES})
 
-    # ensure that the file ends with .proto
-    string(REGEX MATCH "\\.xml$$" PROTOEND ${IDLFILES})
-    if(NOT PROTOEND)
+    # ensure that the file ends with .xml
+    string(REGEX MATCH "\\.xml$$" XMLEND ${IDLFILES})
+    if(NOT XMLEND)
       message(SEND_ERROR "idl file '${IDLFILES}' does not end with .xml")
     endif()
 
