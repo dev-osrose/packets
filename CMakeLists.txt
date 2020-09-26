@@ -55,3 +55,14 @@ endif ()
 include(PacketGenerator)
 
 add_subdirectory(src)
+
+install(TARGETS osIROSE-common-core
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include
+)
+install(TARGETS osIROSE-common-rosecommon
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include
+)
