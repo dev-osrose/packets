@@ -257,7 +257,7 @@ target_link_libraries(${PROJECT}
 
 foreach(FILE ${SOURCES_HEADER})
     set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER ${FILE})
+    PUBLIC_HEADER "rosecommon/${FILE}")
 endforeach()
 
 foreach(FILE ${PACKET_HEADERS})

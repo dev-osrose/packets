@@ -36,7 +36,7 @@ target_link_libraries(${PROJECT}
 
 foreach(FILE ${SOURCES_HEADER})
     set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER ${FILE})
+    PUBLIC_HEADER "core/${FILE}")
 endforeach()
 
 set_property(TARGET ${PROJECT} PROPERTY FOLDER "Common")
