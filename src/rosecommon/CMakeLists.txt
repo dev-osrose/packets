@@ -106,6 +106,7 @@ set(IDL_FILES
   packets/cli_trade.xml
   packets/cli_use_item.xml
   packets/cli_whisper_chat.xml
+  packets/isc_client_status.xml
   packets/isc_alive.xml
   packets/isc_server_register.xml
   packets/isc_transfer.xml

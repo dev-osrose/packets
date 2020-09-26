@@ -27,6 +27,8 @@
 #include "cli_whisper_chat.h"
 #include "isc_alive.h"
 #include "isc_client_status.h"
+#include "isc_transfer.h"
+#include "isc_transfer_char.h"
 #include "isc_server_register.h"
 #include "isc_shutdown.h"
 #include "srv_accept_reply.h"
@@ -94,11 +96,15 @@ void RoseCommon::register_recv_packets() {
     REGISTER_RECV_PACKET(ePacketType::ISC_CLIENT_STATUS, IscClientStatus);
     REGISTER_RECV_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
     REGISTER_RECV_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
+    REGISTER_RECV_PACKET(ePacketType::ISC_TRANSFER, IscTransfer);
+    REGISTER_RECV_PACKET(ePacketType::ISC_TRANSFER_CHAR, IscTransferChar);
 }
 
 void RoseCommon::register_send_packets() {
     REGISTER_SEND_PACKET(ePacketType::ISC_ALIVE, IscAlive);
     REGISTER_SEND_PACKET(ePacketType::ISC_CLIENT_STATUS, IscClientStatus);
+    REGISTER_SEND_PACKET(ePacketType::ISC_TRANSFER,IscTransfer);
+    REGISTER_SEND_PACKET(ePacketType::ISC_TRANSFER_CHAR, IscTransferChar);
     REGISTER_SEND_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
     REGISTER_SEND_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
     REGISTER_SEND_PACKET(ePacketType::PAKSS_ACCEPT_REPLY, SrvAcceptReply);
