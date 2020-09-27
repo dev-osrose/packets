@@ -34,9 +34,9 @@ target_link_libraries(${PROJECT}
     ${CMAKE_THREAD_LIBS_INIT}
     )
 
-foreach(FILE ${SOURCES_HEADER})
-    set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER "src/core/${FILE}")
-endforeach()
+list(TRANSFORM ${SOURCES_HEADER} PREPEND $<SOURCE_DIR>)
+
+set_target_properties(${PROJECT} PROPERTIES
+    PUBLIC_HEADER "${SOURCES_HEADER}")
 
 set_property(TARGET ${PROJECT} PROPERTY FOLDER "Common")
