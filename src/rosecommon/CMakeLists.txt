@@ -255,15 +255,12 @@ target_link_libraries(${PROJECT}
   osIROSE-common-core
 )
 
-foreach(FILE ${SOURCES_HEADER})
-    set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER "src/rosecommon/${FILE}")
-endforeach()
+list(TRANSFORM SOURCES_HEADER PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 
-foreach(FILE ${PACKET_HEADERS})
-    set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER ${FILE})
-endforeach()
+set(HEADERS "${SOURCES_HEADERS};${PACKET_HEADERS}")
+
+set_target_properties(${PROJECT} PROPERTIES
+    PUBLIC_HEADER "${SOURCES_HEADER}")
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCES_BASE})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILES ${SOURCES_HEADER})
