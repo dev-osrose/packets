@@ -1,7 +1,0 @@
-<packet>
-    <includeXml path = "request.xml" />
-    <includeXml path = "response.xml" />
-
-    <element name = "request" type = "Request" />
-    <element name = "response" type = "Response" />
-</packet>
