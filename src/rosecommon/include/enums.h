@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace RoseCommon {
 enum BulletType : uint8_t {
     ARROW = 0,

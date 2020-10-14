@@ -4,6 +4,7 @@
 #include "iserialize.h"
 #include "crosewriter.h"
 #include <chrono>
+#include <cstdint>
 
 namespace RoseCommon {
 namespace {

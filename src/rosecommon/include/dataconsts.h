@@ -16,6 +16,7 @@
 #define _DATACONSTS_H_
 
 #include "enums.h"
+#include <cstdint>
 
 namespace RoseCommon {
 constexpr unsigned int MIN_SELL_TYPE = 1;
