@@ -36,8 +36,8 @@ class CRoseReader;
  * \date october 2016
  */
 class ISerialize {
-	public:
-		virtual ~ISerialize() = default;
+    public:
+        virtual ~ISerialize() = default;
 
         virtual bool read(CRoseReader& reader) = 0;
         virtual bool write(CRoseBasePolicy& writer) const = 0;
