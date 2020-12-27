@@ -16,6 +16,7 @@ set(SOURCES_HEADER
     include/fire_once.h
     include/tuple_index.h
     include/tuple_iterate.h
+    include/json.hpp
     )
 
 set(SOURCES_BASE

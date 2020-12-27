@@ -6,6 +6,11 @@
 #include <chrono>
 #include <cstdint>
 
+#ifndef JSON_USE_IMPLICIT_CONVERSIONS
+#define JSON_USE_IMPLICIT_CONVERSIONS 0
+#include "json.hpp"
+#endif
+
 namespace RoseCommon {
 namespace {
 using namespace std::chrono_literals;
@@ -43,6 +48,13 @@ struct HotbarItem : public ISerialize {
         } data;
 };
 
+void to_json(nlohmann::json& j, const HotbarItem& data) {
+	j = nlohmann::json{
+		{ "type", data.get_type() },
+		{ "slotId", data.get_slotId() },
+	};
+}
+
 struct Skill : public ISerialize {
     virtual bool read(CRoseReader& reader) override {
         if (!reader.get_uint16_t(id)) {
@@ -75,6 +87,13 @@ struct Skill : public ISerialize {
         uint16_t id = 0;
         uint8_t level = 0;
 };
+
+void to_json(nlohmann::json& j, const Skill& data) {
+	j = nlohmann::json{
+		{ "id", data.get_id() },
+		{ "level", data.get_level() },
+	};
+}
 
 struct StatusEffect : public ISerialize {
     virtual bool read(CRoseReader& reader) override {
@@ -122,4 +141,14 @@ struct StatusEffect : public ISerialize {
         uint16_t unkown = 0;
         std::chrono::milliseconds dt = 0ms;
 };
+
+void to_json(nlohmann::json& j, const StatusEffect& data) {
+	j = nlohmann::json{
+		{ "expired(s)", data.get_expired().count() },
+		{ "value", data.get_value() },
+		{ "unkown", data.get_unkown() },
+		{ "dt(ms)", data.get_dt().count() },
+	};
+}
+
 }
