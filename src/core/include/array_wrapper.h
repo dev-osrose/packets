@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 namespace Core {
 template <typename T, size_t N, size_t L>
 struct array_wrapper {
