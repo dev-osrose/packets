@@ -21,6 +21,7 @@ SET(SOURCES_BASE
   src/crosecrypt.cpp
   src/isccommon.cpp
   src/packetfactory.cpp
+  src/types.cpp
 )
 
 set(IDL_TYPE_FILES
