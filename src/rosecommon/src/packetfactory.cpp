@@ -17,18 +17,17 @@
 #include "cli_login_req.h"
 #include "cli_mouse_cmd.h"
 #include "cli_normal_chat.h"
-#include "cli_party_req.h"
+#include "cli_stat_add_req.h"
 #include "cli_revive_req.h"
 #include "cli_select_char_req.h"
 #include "cli_shout_chat.h"
+#include "cli_toggle_move.h"
+#include "cli_set_animation.h"
 #include "cli_srv_select_req.h"
 #include "cli_stop_moving.h"
 #include "cli_teleport_req.h"
 #include "cli_whisper_chat.h"
 #include "isc_alive.h"
-#include "isc_client_status.h"
-#include "isc_transfer.h"
-#include "isc_transfer_char.h"
 #include "isc_server_register.h"
 #include "isc_shutdown.h"
 #include "srv_accept_reply.h"
@@ -45,22 +44,24 @@
 #include "srv_join_server_reply.h"
 #include "srv_login_reply.h"
 #include "srv_mob_char.h"
+#include "srv_toggle_move.h"
 #include "srv_mouse_cmd.h"
 #include "srv_normal_chat.h"
 #include "srv_npc_char.h"
-#include "srv_party_req.h"
 #include "srv_player_char.h"
 #include "srv_quest_data.h"
 #include "srv_remove_object.h"
 #include "srv_screen_shot_time_reply.h"
 #include "srv_select_char_reply.h"
 #include "srv_set_item.h"
+#include "srv_set_animation.h"
 #include "srv_shout_chat.h"
 #include "srv_set_hp_and_mp.h"
 #include "srv_srv_select_reply.h"
 #include "srv_switch_server.h"
 #include "srv_teleport_reply.h"
 #include "srv_whisper_chat.h"
+#include "srv_stat_add_reply.h"
 
 using namespace RoseCommon;
 using namespace RoseCommon::Packet;
@@ -84,27 +85,23 @@ void RoseCommon::register_recv_packets() {
     REGISTER_RECV_PACKET(ePacketType::PAKCS_LOGIN_REQ, CliLoginReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_MOUSE_CMD, CliMouseCmd);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_NORMAL_CHAT, CliNormalChat);
-    REGISTER_RECV_PACKET(ePacketType::PAKCS_PARTY_REQ, CliPartyReq);
+    REGISTER_RECV_PACKET(ePacketType::PAKCS_TOGGLE_MOVE, CliToggleMove);
+    REGISTER_RECV_PACKET(ePacketType::PAKCS_SET_ANIMATION, CliSetAnimation);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_REVIVE_REQ, CliReviveReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_SELECT_CHAR_REQ, CliSelectCharReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_SHOUT_CHAT, CliShoutChat);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_SRV_SELECT_REQ, CliSrvSelectReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_STOP_MOVING, CliStopMoving);
+    REGISTER_RECV_PACKET(ePacketType::PAKCS_STAT_ADD_REQ, CliStatAddReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_TELEPORT_REQ, CliTeleportReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_WHISPER_CHAT, CliWhisperChat);
     REGISTER_RECV_PACKET(ePacketType::ISC_ALIVE, IscAlive);
-    REGISTER_RECV_PACKET(ePacketType::ISC_CLIENT_STATUS, IscClientStatus);
     REGISTER_RECV_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
     REGISTER_RECV_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
-    REGISTER_RECV_PACKET(ePacketType::ISC_TRANSFER, IscTransfer);
-    REGISTER_RECV_PACKET(ePacketType::ISC_TRANSFER_CHAR, IscTransferChar);
 }
 
 void RoseCommon::register_send_packets() {
     REGISTER_SEND_PACKET(ePacketType::ISC_ALIVE, IscAlive);
-    REGISTER_SEND_PACKET(ePacketType::ISC_CLIENT_STATUS, IscClientStatus);
-    REGISTER_SEND_PACKET(ePacketType::ISC_TRANSFER,IscTransfer);
-    REGISTER_SEND_PACKET(ePacketType::ISC_TRANSFER_CHAR, IscTransferChar);
     REGISTER_SEND_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
     REGISTER_SEND_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
     REGISTER_SEND_PACKET(ePacketType::PAKSS_ACCEPT_REPLY, SrvAcceptReply);
@@ -124,13 +121,15 @@ void RoseCommon::register_send_packets() {
     REGISTER_SEND_PACKET(ePacketType::PAKWC_NORMAL_CHAT, SrvNormalChat);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_NPC_CHAR, SrvNpcChar);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_PLAYER_CHAR, SrvPlayerChar);
-    REGISTER_SEND_PACKET(ePacketType::PAKWC_PARTY_REQ, SrvPartyReq);
+    REGISTER_SEND_PACKET(ePacketType::PAKWC_TOGGLE_MOVE, SrvToggleMove);
+    REGISTER_SEND_PACKET(ePacketType::PACWC_SET_ANIMATION, SrvSetAnimation);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_QUEST_DATA, SrvQuestData);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_REMOVE_OBJECT, SrvRemoveObject);
     REGISTER_SEND_PACKET(ePacketType::PAKSC_SCREEN_SHOT_TIME_REPLY, SrvScreenShotTimeReply);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_SELECT_CHAR_REPLY, SrvSelectCharReply);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_SET_ITEM, SrvSetItem);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_SHOUT_CHAT, SrvShoutChat);
+    REGISTER_SEND_PACKET(ePacketType::PAKWC_STAT_ADD_REPLY, SrvStatAddReply);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_SET_HP_AND_MP, SrvSetHpAndMp);
     REGISTER_SEND_PACKET(ePacketType::PAKLC_SRV_SELECT_REPLY, SrvSrvSelectReply);
     REGISTER_SEND_PACKET(ePacketType::PAKCC_SWITCH_SERVER, SrvSwitchServer);
