@@ -10,10 +10,10 @@ set(_byproducts
 )
 
 if(WIN32 OR MINGW)
-  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/win64-packet_generator.zip)
+  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/windows-${CMAKE_HOST_SYSTEM_PROCESSOR}-packet_generator.zip)
   set(EXEC_POSTFIX .exe)
 else()
-  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/linux-packet_generator.tar.gz)
+  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/linux-${CMAKE_HOST_SYSTEM_PROCESSOR}-packet_generator.tar.gz)
   set(EXEC_POSTFIX )
 endif()
 
