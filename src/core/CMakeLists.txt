@@ -4,6 +4,7 @@ set(PROJECT "osIROSE-common-core")
 project(${PROJECT})
 
 set(SOURCES_HEADER
+    include/array_wrapper.h
     include/singleton.h
     include/factory.h
     include/hash.h
