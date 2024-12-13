@@ -64,7 +64,9 @@ set(IDL_FILES
   packets/cli_hotbar_set_icon_req.xml
   packets/cli_hp_req.xml
   packets/cli_join_server_req.xml
+  packets/cli_join_server_token_req.xml
   packets/cli_login_req.xml
+  packets/cli_login_token_req.xml
   packets/cli_logout_req.xml
   packets/cli_memo.xml
   packets/cli_messenger_chat.xml
@@ -107,12 +109,6 @@ set(IDL_FILES
   packets/cli_trade.xml
   packets/cli_use_item.xml
   packets/cli_whisper_chat.xml
-  packets/isc_client_status.xml
-  packets/isc_alive.xml
-  packets/isc_server_register.xml
-  packets/isc_transfer.xml
-  packets/isc_transfer_char.xml
-  packets/isc_shutdown.xml
   packets/srv_accept_reply.xml
   packets/srv_allied_chat.xml
   packets/srv_allied_shout_chat.xml

@@ -1,0 +1,4 @@
+<packet ePacketType = "PAKCS_LOGIN_TOKEN_REQ">
+    <include path = "string" system = "true" />
+    <element name = "token" type = "std::string" ref = "true" />
+</packet>

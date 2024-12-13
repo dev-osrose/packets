@@ -14,7 +14,9 @@
 #include "cli_equip_item.h"
 #include "cli_hp_req.h"
 #include "cli_join_server_req.h"
+#include "cli_join_server_token_req.h"
 #include "cli_login_req.h"
+#include "cli_login_token_req.h"
 #include "cli_mouse_cmd.h"
 #include "cli_normal_chat.h"
 #include "cli_stat_add_req.h"
@@ -28,9 +30,6 @@
 #include "cli_teleport_req.h"
 #include "cli_whisper_chat.h"
 #include "cli_equip_projectile.h"
-#include "isc_alive.h"
-#include "isc_server_register.h"
-#include "isc_shutdown.h"
 #include "srv_accept_reply.h"
 #include "srv_attack.h"
 #include "srv_billing_message.h"
@@ -86,6 +85,7 @@ void RoseCommon::register_recv_packets() {
     REGISTER_RECV_PACKET(ePacketType::PAKCS_DROP_ITEM, CliDropItem);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_EQUIP_ITEM, CliEquipItem);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_LOGIN_REQ, CliLoginReq);
+    REGISTER_RECV_PACKET(ePacketType::PAKCS_LOGIN_TOKEN_REQ, CliLoginTokenReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_MOUSE_CMD, CliMouseCmd);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_NORMAL_CHAT, CliNormalChat);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_TOGGLE_MOVE, CliToggleMove);
@@ -99,15 +99,9 @@ void RoseCommon::register_recv_packets() {
     REGISTER_RECV_PACKET(ePacketType::PAKCS_TELEPORT_REQ, CliTeleportReq);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_WHISPER_CHAT, CliWhisperChat);
     REGISTER_RECV_PACKET(ePacketType::PAKCS_EQUIP_PROJECTILE, CliEquipProjectile);
-    REGISTER_RECV_PACKET(ePacketType::ISC_ALIVE, IscAlive);
-    REGISTER_RECV_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
-    REGISTER_RECV_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
 }
 
 void RoseCommon::register_send_packets() {
-    REGISTER_SEND_PACKET(ePacketType::ISC_ALIVE, IscAlive);
-    REGISTER_SEND_PACKET(ePacketType::ISC_SERVER_REGISTER, IscServerRegister);
-    REGISTER_SEND_PACKET(ePacketType::ISC_SHUTDOWN, IscShutdown);
     REGISTER_SEND_PACKET(ePacketType::PAKSS_ACCEPT_REPLY, SrvAcceptReply);
     REGISTER_SEND_PACKET(ePacketType::PAKWC_ATTACK, SrvAttack);
     REGISTER_SEND_PACKET(ePacketType::PAKLC_CHANNEL_LIST_REPLY, SrvChannelListReply);

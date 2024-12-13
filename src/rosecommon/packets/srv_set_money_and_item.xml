@@ -2,7 +2,7 @@
     <includeXml path = "item.xml" />
 
     <element name = "zuly" type = "int64_t" />
-    <element name = "items" type = "IndexAndItem" occurs = "unbounded" occursSize = "uint8_t" default = "{}" />
+    <element name = "items" type = "IndexAndItem" occurs = "unbounded" occursSize = "uint64_t" default = "{}" />
 
     <complexType name = "IndexAndItem">
         <sequence>
