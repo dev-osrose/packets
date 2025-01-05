@@ -10,7 +10,7 @@
         <sequence>
             <element name = "id" type = "uint16_t" />
             <element name = "gem_opt" type = "uint16_t" />
-            <element name = "socket" type = "bool" />
+            <element name = "socket" type = "int8_t" />
             <element name = "grade" type = "uint8_t" />
         </sequence>
     </complexType>
