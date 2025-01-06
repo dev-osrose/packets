@@ -3,12 +3,9 @@
     <element name = "exp_data" type = "PartyExpData" />
 
     <complexType name = "PartyExpData">
-        <choice>
-            <sequence inline="true">
-                <element name = "exp" type = "uint32_t" bits = "31" />
-                <element name = "level_up" type = "uint32_t" bits = "1" />
-            </sequence>
-            <element name = "data" type = "uint32_t" />
-        </choice>
+        <sequence>
+            <element name = "exp" type = "uint32_t" />
+            <element name = "level_up" type = "uint8_t" />
+        </sequence>
     </complexType>
 </packet>

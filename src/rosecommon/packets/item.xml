@@ -1,26 +1,21 @@
 <complexType name = "Header">
-    <choice>
-        <sequence inline = "true">
-            <element name = "type" type = "unsigned int" bits = "5" />
-            <element name = "id" type = "unsigned int" bits = "10" />
-            <element name = "isCreated" type = "unsigned int" bits = "1" />
-        </sequence>
-        <element name = "header" type = "uint16_t" default = "0" />
-    </choice>
+    <sequence>
+        <element name = "type" type = "uint8_t" />
+        <element name = "id" type = "uint16_t" />
+        <element name = "isCreated" type = "uint8_t" />
+    </sequence>
 </complexType>
 
 <complexType name = "Data">
-    <choice>
-        <sequence inline = "true">
-            <element name = "gem_opt" type = "unsigned int" bits = "9" />
-            <element name = "durability" type = "unsigned int" bits = "7" />
-            <element name = "life" type = "unsigned int" bits = "10" />
-            <element name = "hasSocket" type = "unsigned int" bits = "1" />
-            <element name = "isAppraised" type = "unsigned int" bits = "1" />
-            <element name = "refine" type = "unsigned int" bits = "4" />
-        </sequence>
+    <sequence>
+        <element name = "gem_opt" type = "uint16_t" />
+        <element name = "life" type = "uint16_t" />
+        <element name = "durability" type = "uint8_t" />
+        <element name = "hasSocket" type = "uint8_t" />
+        <element name = "isAppraised" type = "uint8_t" />
+        <element name = "refine" type = "uint8_t" />
         <element name = "count" type = "uint32_t" default = "0" />
-    </choice>
+    </sequence>
 </complexType>
 
 <complexType name = "Item">
