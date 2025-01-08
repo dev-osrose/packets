@@ -38,7 +38,7 @@ namespace RoseCommon {
 #endif
 
 #ifndef MAX_PACKET_SIZE
-#define MAX_PACKET_SIZE 0x7FF
+#define MAX_PACKET_SIZE 0xFFF
 #endif
 
 // CS = Client -> server
