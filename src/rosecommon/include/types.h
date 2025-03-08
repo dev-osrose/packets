@@ -18,34 +18,35 @@ using namespace std::chrono_literals;
 
 struct HotbarItem : public ISerialize {
     virtual bool read(CRoseReader& reader) override {
-        if (!reader.get_uint16_t(data.item)) {
+        if (!reader.get_uint8_t(_type)) {
+            return false;
+        }
+        if (!reader.get_uint16_t(slotId)) {
             return false;
         }
         return true;
     }
 
     virtual bool write(CRoseBasePolicy& writer) const override {
-        if (!writer.set_uint16_t(data.item)) {
+        if (!writer.set_uint8_t(_type)) {
+            return false;
+        }
+        if (!writer.set_uint16_t(slotId)) {
             return false;
         }
         return true;
     }
     
-    static constexpr size_t size() { return sizeof(data); }
+    static constexpr size_t size() { return sizeof(_type) + sizeof(slotId); }
     
-    void set_type(uint8_t type) { data.type = type; }
-    uint8_t get_type() const { return data.type; };
-    void set_slotId(uint16_t id) { data.slotId = id; }
-    uint16_t get_slotId() const { return data.slotId; }
+    void set_type(uint8_t type) { _type = type; }
+    uint8_t get_type() const { return _type; };
+    void set_slotId(uint16_t id) { slotId = id; }
+    uint16_t get_slotId() const { return slotId; }
     
     private:
-        union {
-            PACK(struct {
-                uint8_t type : 5;
-                uint16_t slotId : 11;
-            });
-            uint16_t item = 0;
-        } data;
+        uint8_t _type;
+        uint16_t slotId;
 };
 
 void to_json(nlohmann::json& j, const HotbarItem& data);
