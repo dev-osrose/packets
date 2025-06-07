@@ -99,6 +99,7 @@ class CRoseReader {
         bool get_uint64_t(uint64_t& data) { return read(data); }
         bool get_int64_t(int64_t& data) { return read(data); }
         bool get_string(std::string& data) {
+            data.clear();
             char c = '\0';
             if (!read(c)) return false;
             while (c != '\0') {
@@ -108,6 +109,7 @@ class CRoseReader {
             return true;
         }
         bool get_string(std::string& data, size_t size) {
+            data.clear();
             for (size_t i = 0; i < size; ++i) {
                 char c;
                 if (!read(c)) return false;
