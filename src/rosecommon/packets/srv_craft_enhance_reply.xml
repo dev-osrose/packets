@@ -1,11 +1,11 @@
 <packet ePacketType = "PAKWC_CRAFT_ENHANCE_REPLY">
     <includeXml path = "item.xml" />
     <element name = "result" type = "CraftEnhancementResult" />
-    <element name = "items" type = "Item" occurs = "unbounded" occurSize = "uint8_t" default = "none" />
+    <element name = "items" type = "IndexAndItem" occurs = "unbounded" occurSize = "uint8_t" default = "{}" />
 
     <simpleType name = "CraftEnhancementResult">
         <restriction base = "uint8_t">
-            <enumeration value = "GEM_SUCCESS" />
+            <enumeration value = "GEM_SUCCESS" id="0x1" />
             <enumeration value = "GEM_NO_SOCKET" />
             <enumeration value = "GEM_SOCKET_FULL" />
             <enumeration value = "DISASSEMBLE_GEM_SUCCESS" />
@@ -17,4 +17,11 @@
             <enumeration value = "UPGRADE_INVALID_MATERIALS" />
         </restriction>
     </simpleType>
+
+    <complexType name = "IndexAndItem">
+        <sequence>
+            <element name = "index" type = "uint8_t" default = "0" />
+            <element name = "item" type = "Item" default = "{}" />
+        </sequence>
+    </complexType>
 </packet>
