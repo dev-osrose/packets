@@ -78,7 +78,7 @@ function(GENERATE_PACKETS SRCS HDRS)
       OUTPUT "${H_FILE}" "${CXX_FILE}"
       COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_OUTPATH}
       COMMAND ${CMAKE_COMMAND} -E make_directory ${HDR_OUTPATH}
-      COMMAND utils::packet_generator --inputs "${MATCH_PATH}" cpp --output_header_folder "${HDR_OUTPATH}" --output_source_folder "${SRC_OUTPATH}"
+      COMMAND utils::packet_generator --inputs "${MATCH_PATH}" cpp --output-header-folder "${HDR_OUTPATH}" --output-source-folder "${SRC_OUTPATH}"
       DEPENDS ${ABS_FILE} utils::packet_generator
       COMMENT "Running C++ packetGenerator compiler on ${MATCH_PATH} with root ${IDLROOT}, generating: ${CXX_FILE}, ${H_FILE}"
       VERBATIM)
