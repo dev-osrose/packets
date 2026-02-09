@@ -1,4 +1,5 @@
 #pragma once
+#include <iterator>
 
 namespace Core {
 template <typename T, size_t N, size_t L>
