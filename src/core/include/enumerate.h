@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <iterator>
 
 namespace Core {
 namespace {
