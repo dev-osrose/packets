@@ -27,15 +27,18 @@ class CRoseBasePolicy {
     template <size_t N>
     bool set_bitset(const std::bitset<N>& bits) {
       constexpr size_t byte_count = (N + 7) / 8;
+      for (size_t i = 0; i < byte_count; ++i) {
+        uint8_t byte = 0;
 
-      std::array<uint8_t, byte_count> buffer{};
-      for (size_t i = 0; i < N; ++i) {
-        if (bits.test(i)) {
-          buffer[i / 8] |= static_cast<uint8_t>(1u << (i % 8));
+        for (size_t bit = 0; bit < 8; ++bit) {
+          const size_t index = i * 8 + bit;
+          if (index < N && bits.test(index)) {
+            byte |= static_cast<uint8_t>(1u << bit);
+          }
         }
+        if (!set_uint8_t(byte)) return false;
       }
-
-      return set_bits(buffer.data(), N);
+      return true;
     }
 
     virtual uint16_t get_size() const = 0;
@@ -68,16 +71,6 @@ class CRosePolicy : public CRoseBasePolicy {
     bool set_double(double data) override { return write(data); }
     bool set_char(char data) override { return write(data); }
     bool set_iserialize(const ISerialize& data) override { return data.write(*this); }
-
-    bool set_bits(const uint8_t* data, size_t bit_count) override {
-      const size_t byte_count = (bit_count + 7) / 8;
-
-      for (size_t i = 0; i < byte_count; ++i) {
-        if (!write(data[i])) return false;
-      }
-
-      return true;
-    }
 
     uint16_t get_size() const override { return m_size; }
 
