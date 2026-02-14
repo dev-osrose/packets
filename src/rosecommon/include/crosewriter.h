@@ -7,6 +7,7 @@ namespace RoseCommon {
 
 class CRoseBasePolicy {
   public:
+    virtual ~CRoseBasePolicy() = default;
     virtual bool set_uint8_t(uint8_t data) = 0;
     virtual bool set_int8_t(int8_t data) = 0;
     virtual bool set_uint16_t(uint16_t data) = 0;
@@ -30,28 +31,28 @@ class CRosePolicy : public CRoseBasePolicy {
   public:
     CRosePolicy(uint8_t *buffer, uint16_t size) : m_current(buffer), m_buffer(buffer), m_size(size) {}
 
-    bool set_uint8_t(uint8_t data) { return write(data); }
-    bool set_int8_t(int8_t data) { return write(data); }
-    bool set_uint16_t(uint16_t data) { return write(data); }
-    bool set_int16_t(int16_t data) { return write(data); }
-    bool set_uint32_t(uint32_t data) { return write(data); }
-    bool set_int32_t(int32_t data) { return write(data); }
-    bool set_uint64_t(uint64_t data) { return write(data); }
-    bool set_int64_t(int64_t data) { return write(data); }
-    bool set_string(const std::string& data) {
+    bool set_uint8_t(uint8_t data) override { return write(data); }
+    bool set_int8_t(int8_t data) override { return write(data); }
+    bool set_uint16_t(uint16_t data) override { return write(data); }
+    bool set_int16_t(int16_t data) override { return write(data); }
+    bool set_uint32_t(uint32_t data) override { return write(data); }
+    bool set_int32_t(int32_t data) override { return write(data); }
+    bool set_uint64_t(uint64_t data) override { return write(data); }
+    bool set_int64_t(int64_t data) override { return write(data); }
+    bool set_string(const std::string& data) override {
        for (const char c : data)
            if (!write(c)) return false;
        return write('\0');
     }
-    bool set_string(const std::string& data, size_t size) {
+    bool set_string(const std::string& data, size_t size) override {
        for (size_t i = 0; i < size && i < data.size(); ++i)
            if (!write(data[i])) return false;
        return true;
     }
-    bool set_float(float data) { return write(data); }
-    bool set_double(double data) { return write(data); }
-    bool set_char(char data) { return write(data); }
-    bool set_iserialize(const ISerialize& data) { return data.write(*this); }
+    bool set_float(float data) override { return write(data); }
+    bool set_double(double data) override { return write(data); }
+    bool set_char(char data) override { return write(data); }
+    bool set_iserialize(const ISerialize& data) override { return data.write(*this); }
 
     template <size_t N>
     bool set_bitset(const std::bitset<N>& data) {
@@ -70,7 +71,7 @@ class CRosePolicy : public CRoseBasePolicy {
       return true;
     }
 
-    uint16_t get_size() const { return m_size; }
+    uint16_t get_size() const override { return m_size; }
 
     private:
     uint8_t *m_current, *m_buffer;
