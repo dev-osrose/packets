@@ -1,12 +1,12 @@
 <packet ePacketType = "PAKLC_SRV_SELECT_REPLY">
-    <element name = "result" type = "Result" />
+    <element name = "result" type = "ServerSelectResult" />
     <element name = "sessionId" type = "uint32_t" />
     <element name = "cryptVal" type = "uint32_t" />
     <include path = "string" system = "true" />
     <element name = "ip" type = "std::string" ref = "true" />
     <element name = "port" type = "uint16_t" />
 
-    <simpleType name = "Result">
+    <simpleType name = "ServerSelectResult">
         <restriction base = "uint8_t">
             <enumeration value = "OK" />
             <enumeration value = "FAILED" />

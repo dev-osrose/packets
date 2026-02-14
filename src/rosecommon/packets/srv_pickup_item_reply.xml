@@ -2,11 +2,11 @@
     <includeXml path = "item.xml" />
 
     <element name = "id" type = "uint16_t" default = "0" />
-    <element name = "result" type = "Result" /> 
+    <element name = "result" type = "PickupItemResult" />
     <element name = "slot" type = "uint16_t" default = "0" />
     <element name = "item" type = "Item" default = "{}" />
 
-    <simpleType name = "Result">
+    <simpleType name = "PickupItemResult">
         <restriction base = "uint8_t">
             <enumeration value = "OK" />
             <enumeration value = "NO_ITEM" />

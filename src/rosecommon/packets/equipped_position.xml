@@ -8,6 +8,9 @@
         <enumeration value = "BACKPACK" />
         <enumeration value = "WEAPON_R" />
         <enumeration value = "WEAPON_L" />
-        <enumeration value = "MAX_ITEMS" />
+        <enumeration value = "NECKLACE" />
+        <enumeration value = "RING" />
+        <enumeration value = "EARRING" />
+        <enumeration value = "MAX_EQUIP_ITEMS" />
     </restriction>
 </simpleType>

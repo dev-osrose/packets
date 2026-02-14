@@ -1,0 +1,7 @@
+<complexType name="StatusEffect">
+    <sequence>
+        <element name="expired" type="uint32_t" />
+        <element name="value" type="uint16_t" />
+        <element name="unknown" type="uint16_t" />
+    </sequence>
+</complexType>

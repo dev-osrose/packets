@@ -1,0 +1,10 @@
+<simpleType name = "RidingItem">
+<restriction base = "uint8_t">
+    <enumeration value = "Body" id = "0" />
+    <enumeration value = "Engine" />
+    <enumeration value = "Legs" />
+    <enumeration value = "Option" />
+    <enumeration value = "Arms" />
+    <enumeration value = "MaxRidingItems" />
+</restriction>
+</simpleType>

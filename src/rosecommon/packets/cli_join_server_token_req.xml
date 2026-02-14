@@ -1,0 +1,5 @@
+<packet ePacketType = "PAKCS_JOIN_SERVER_TOKEN_REQ">
+    <element name = "sessionId" type = "uint32_t" />
+    <include path = "string" system = "true" />
+    <element name = "token" type = "std::string" ref = "true" />
+</packet>

@@ -1,8 +1,8 @@
 <packet ePacketType = "PAKCC_CREATE_CHAR_REPLY">
-    <element name = "result" type = "Result" />
+    <element name = "result" type = "CreateCharResult" />
     <element name = "platininum" type = "uint8_t" default = "0" />
 
-    <simpleType name = "Result">
+    <simpleType name = "CreateCharResult">
         <restriction base = "uint8_t">
             <enumeration value = "OK" />
             <enumeration value = "FAILED" />

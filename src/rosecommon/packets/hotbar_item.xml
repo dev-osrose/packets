@@ -1,0 +1,6 @@
+<complexType name="HotbarItem">
+    <sequence>
+        <element name="type" type="uint8_t" bits="5" />
+        <element name="slotId" type="uint16_t" bits="11" />
+    </sequence>
+</complexType>

@@ -19,8 +19,12 @@
             <enumeration value = "MP" id = "17" />
             <enumeration value = "EXP" id = "30" />
             <enumeration value = "LEVEL" id = "31" />
+            <enumeration value = "STATPOINT" id = "32" />
             <enumeration value = "PK_FLAG" id = "33" />
             <enumeration value = "TEAM" id = "34" />
+            <enumeration value = "MONEY" id = "40" />
+            <enumeration value = "STAMINA" id = "76" />
+            <enumeration value = "SKILLPOINT" id = "37" />
             <enumeration value = "UNIONPOINT1" id = "81" />
             <enumeration value = "UNIONPOINT2" id = "82" />
             <enumeration value = "UNIONPOINT3" id = "83" />
