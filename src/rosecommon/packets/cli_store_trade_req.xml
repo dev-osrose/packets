@@ -17,6 +17,7 @@
                 <element name="sell_inventory_idx" type="uint8_t"/>
                 <element name="sell_amount" type="uint16_t" />
             </sequence>
+            <element name="data" type="uint32_t" />
         </choice>
     </complexType>
 </packet>
