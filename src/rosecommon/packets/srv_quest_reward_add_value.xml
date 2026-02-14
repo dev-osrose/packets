@@ -5,6 +5,8 @@
     <simpleType name = "QuestRewardValueType">
         <restriction base = "uint16_t">
             <enumeration value = "SEX" id = "2" />
+            <enumeration value = "CLASS" id = "4" />
+            <enumeration value = "UNION" id = "5" />
             <enumeration value = "FACE" id = "8" />
             <enumeration value = "HAIR" id = "9" />
             <enumeration value = "STR" id = "10" />
@@ -16,10 +18,13 @@
             <enumeration value = "HP" id = "16" />
             <enumeration value = "MP" id = "17" />
             <enumeration value = "EXP" id = "30" />
+            <enumeration value = "LEVEL" id = "31" />
             <enumeration value = "STATPOINT" id = "32" />
-            <enumeration value = "SKILLPOINT" id = "37" />
+            <enumeration value = "PK_FLAG" id = "33" />
+            <enumeration value = "TEAM" id = "34" />
             <enumeration value = "MONEY" id = "40" />
             <enumeration value = "STAMINA" id = "76" />
+            <enumeration value = "SKILLPOINT" id = "37" />
             <enumeration value = "UNIONPOINT1" id = "81" />
             <enumeration value = "UNIONPOINT2" id = "82" />
             <enumeration value = "UNIONPOINT3" id = "83" />

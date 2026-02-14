@@ -1,0 +1,8 @@
+<simpleType name = "BulletType">
+    <restriction base = "uint8_t">
+        <enumeration value = "Arrow" id = "0" />
+        <enumeration value = "Bullet" />
+        <enumeration value = "Throw" />
+        <enumeration value = "MaxBulletTypes" />
+    </restriction>
+</simpleType>

@@ -1,11 +1,11 @@
 <packet ePacketType = "PAKLC_LOGIN_REPLY">
     <include path = "string" system = "true" />
-    <element name = "result" type = "Result" />
+    <element name = "result" type = "LoginResult" />
     <element name = "right" type = "uint16_t" />
     <element name = "type" type = "uint16_t" />
     <element name = "serversInfo" type = "ServerInfo" occurs = "unbounded" default = "none" ref = "true" />
 
-    <simpleType name = "Result">
+    <simpleType name = "LoginResult">
         <restriction base = "uint8_t">
             <enumeration value = "OK" />
             <enumeration value = "FAILED" />

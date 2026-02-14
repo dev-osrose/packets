@@ -1,0 +1,6 @@
+<complexType name="Skill">
+    <sequence>
+        <element name="id" type="uint16_t" />
+        <element name="level" type="uint8_t" />
+    </sequence>
+</complexType>
