@@ -1,49 +1,60 @@
+include(FetchContent)
 
+find_program(CARGO_EXECUTABLE cargo REQUIRED)
 
-set(IDL_INSTALL_DIR ${CMAKE_THIRD_PARTY_DIR})
+option(IDL_OFFLINE "Build IDL without network access" OFF)
 
-message(STATUS "Building packet_generator since packet_generator tool was not found")
-
-set(_byproducts
-  ${IDL_INSTALL_DIR}/bin/packet_generator
-  ${IDL_INSTALL_DIR}/bin/packet_generator.exe
-)
-
-string(TOLOWER ${CMAKE_HOST_SYSTEM_NAME} HOST_SYSTEM_NAME_LOWER)
-string(TOLOWER ${CMAKE_HOST_SYSTEM_PROCESSOR} HOST_SYSTEM_PROCESSOR_LOWER)
-
-if(WIN32 OR MINGW)
-  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/${HOST_SYSTEM_NAME_LOWER}-${HOST_SYSTEM_PROCESSOR_LOWER}-packet_generator.zip)
-  set(EXEC_POSTFIX .exe)
-else()
-  set(DOWNLOAD_URL https://github.com/dev-osrose/IDL/releases/download/idl-latest/${HOST_SYSTEM_NAME_LOWER}-${HOST_SYSTEM_PROCESSOR_LOWER}-packet_generator.tar.gz)
-  set(EXEC_POSTFIX )
+if(IDL_OFFLINE)
+  set(FETCHCONTENT_FULLY_DISCONNECTED ON)
 endif()
 
-ExternalProject_Add(
+FetchContent_Declare(
   idl
-  URL ${DOWNLOAD_URL}
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/packet_generator${EXEC_POSTFIX} <INSTALL_DIR>/bin
-  INSTALL_COMMAND ""
-  BUILD_BYPRODUCTS ${_byproducts}
-  INSTALL_DIR ${IDL_INSTALL_DIR}
-)
-ExternalProject_Get_Property(
-  idl
-  install_dir
+  GIT_REPOSITORY https://github.com/dev-osrose/IDL.git
+  GIT_TAG <pinned_commit_hash>  # IMPORTANT: pin this
 )
 
-if(WIN32 OR MINGW)
-  set(IDL_GEN_EXE_PATH ${install_dir}/bin/packet_generator.exe)
-else()
-  set(IDL_GEN_EXE_PATH ${install_dir}/bin/packet_generator)
-endif()
+FetchContent_MakeAvailable(idl)
 
-if(NOT TARGET utils::packet_generator)
-  add_executable(utils::packet_generator IMPORTED GLOBAL)
-  add_dependencies(utils::packet_generator idl)
-  set_target_properties(utils::packet_generator PROPERTIES IMPORTED_LOCATION ${IDL_GEN_EXE_PATH})
-endif()
+set(IDL_TARGET_DIR
+  ${idl_BINARY_DIR}/cargo-target
+)
 
-mark_as_advanced( IDL_GEN_EXE_PATH PacketGenerator_FOUND )
+set(IDL_PACKET_GENERATOR
+  ${IDL_TARGET_DIR}/release/packet_generator${CMAKE_EXECUTABLE_SUFFIX}
+)
+
+file(GLOB_RECURSE IDL_RUST_SOURCES
+  ${idl_SOURCE_DIR}/src/*.rs
+)
+
+add_custom_command(
+  OUTPUT ${IDL_PACKET_GENERATOR}
+
+  COMMAND ${CMAKE_COMMAND} -E env
+          CARGO_TARGET_DIR=${IDL_TARGET_DIR}
+          ${CARGO_EXECUTABLE}
+          build --release --locked
+
+  WORKING_DIRECTORY ${idl_SOURCE_DIR}
+
+  DEPENDS
+    ${idl_SOURCE_DIR}/Cargo.toml
+    ${idl_SOURCE_DIR}/Cargo.lock
+    ${IDL_RUST_SOURCES}
+
+  COMMENT "Building Rust packet_generator"
+  VERBATIM
+)
+
+add_custom_target(idl_packet_generator
+  DEPENDS ${IDL_PACKET_GENERATOR}
+)
+
+add_executable(utils::packet_generator IMPORTED GLOBAL)
+
+add_dependencies(utils::packet_generator idl_packet_generator)
+
+set_target_properties(utils::packet_generator PROPERTIES
+  IMPORTED_LOCATION ${IDL_PACKET_GENERATOR}
+)

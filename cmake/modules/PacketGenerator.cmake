@@ -1,97 +1,118 @@
-function(GENERATE_PACKETS SRCS HDRS)
-  cmake_parse_arguments(ARG "DEBUG" "IDLROOT;HDR_OUTPATH;SRC_OUTPATH;TARGET" "IDLFILES" ${ARGN})
+function(target_generate_packets TARGET)
+  cmake_parse_arguments(ARG
+    ""
+    "IDLROOT;OUTDIR"
+    "IDLFILES"
+    ${ARGN}
+  )
 
-  if(NOT ARG_IDLFILES)
-    message(SEND_ERROR "Error: GENERATE_PACKETS() called without any idl files")
-    return()
-  endif(NOT ARG_IDLFILES)
-  
-  set(SRC_OUTPATH ${ARG_SRC_OUTPATH})
-  set(HDR_OUTPATH ${ARG_HDR_OUTPATH})
-  set(IDLROOT ${ARG_IDLROOT})
-  set(TARGET ${ARG_TARGET})
-
-  if(ARG_DEBUG)
-    message("SRC_OUTPATH: ${SRC_OUTPATH}")
-    message("HDR_OUTPATH: ${HDR_OUTPATH}")
-    message("IDLFILES: ${IDLROOT}")
-    message("TARGET: ${TARGET}")
+  if(NOT TARGET ${TARGET})
+    message(FATAL_ERROR
+      "target_generate_packets: '${TARGET}' is not a valid target"
+    )
   endif()
 
-  set(${SRCS})
-  set(${HDRS})
-  foreach(IDLFILES ${ARG_IDLFILES})
+  if(NOT ARG_IDLFILES)
+    message(FATAL_ERROR
+      "target_generate_packets: no IDLFILES provided"
+    )
+  endif()
 
-    # ensure that the file ends with .xml
-    string(REGEX MATCH "\\.xml$$" XMLEND ${IDLFILES})
-    if(NOT XMLEND)
-      message(SEND_ERROR "idl file '${IDLFILES}' does not end with .xml")
+  if(NOT ARG_IDLROOT)
+    message(FATAL_ERROR
+      "target_generate_packets: IDLROOT is required"
+    )
+  endif()
+
+  # Default output dir (per-config safe)
+  if(NOT ARG_OUTDIR)
+    set(ARG_OUTDIR
+      ${CMAKE_CURRENT_BINARY_DIR}/generated/$<CONFIG>
+    )
+  endif()
+
+  set(SRC_OUTPATH ${ARG_OUTDIR}/src)
+  set(HDR_OUTPATH ${ARG_OUTDIR}/include)
+
+  set(local_srcs)
+  set(local_hdrs)
+
+  foreach(idl_file IN LISTS ARG_IDLFILES)
+
+    if(NOT idl_file MATCHES "\\.xml$")
+      message(FATAL_ERROR
+        "IDL file '${idl_file}' must end with .xml"
+      )
     endif()
 
-    get_filename_component(IDL_PATH ${IDLFILES} PATH)
-    get_filename_component(ABS_FILE ${IDLFILES} ABSOLUTE)
-    get_filename_component(FILE_WE ${IDLFILES} NAME_WE)
+    get_filename_component(abs_file "${idl_file}" ABSOLUTE)
 
-    if(ARG_DEBUG)
-      message("file ${IDLFILES}:")
-      message("  PATH=${IDL_PATH}")
-      message("  ABS_FILE=${ABS_FILE}")
-      message("  FILE_WE=${FILE_WE}")
-      message("  IDLROOT=${IDLROOT}")
+    file(RELATIVE_PATH rel_path
+      "${ARG_IDLROOT}"
+      "${abs_file}"
+    )
+
+    if(rel_path MATCHES "^\\.\\.")
+      message(FATAL_ERROR
+        "IDL file '${idl_file}' is not under IDLROOT "
+        "'${ARG_IDLROOT}'"
+      )
     endif()
 
-    # find out of the file is in the specified proto root
-    # TODO clean the IDLROOT so that it does not form a regex itself?
-    string(REGEX MATCH "^${IDLROOT}" IN_ROOT_PATH ${IDLFILES})
-    string(REGEX MATCH "^${IDLROOT}" IN_ROOT_ABS_FILE ${ABS_FILE})
+    string(REGEX REPLACE "\\.xml$" ""
+      rel_no_ext "${rel_path}"
+    )
 
-    if(IN_ROOT_PATH)
-      set(MATCH_PATH ${IDLFILES})
-    elseif(IN_ROOT_ABS_FILE)
-      set(MATCH_PATH ${ABS_FILE})
-    else()
-      message(SEND_ERROR "IDL file '${IDLFILES}' is not in IDLROOT '${IDLROOT}'")
-    endif()
+    set(cxx_file
+      "${SRC_OUTPATH}/${rel_no_ext}.cpp"
+    )
 
-    # build the result file name
-    string(REGEX REPLACE "^${IDLROOT}(/?)" "" ROOT_CLEANED_FILE ${MATCH_PATH})
-    if(ARG_DEBUG)
-      message("  ROOT_CLEANED_FILE=${ROOT_CLEANED_FILE}")
-    endif()
-    string(REGEX REPLACE "\\.xml$$" "" EXT_CLEANED_FILE ${ROOT_CLEANED_FILE})
-    if(ARG_DEBUG)
-        message("  EXT_CLEANED_FILE=${EXT_CLEANED_FILE}")
-    endif()
+    set(h_file
+      "${HDR_OUTPATH}/${rel_no_ext}.h"
+    )
 
-    set(CXX_FILE "${SRC_OUTPATH}/${EXT_CLEANED_FILE}.cpp")
-    set(H_FILE "${HDR_OUTPATH}/${EXT_CLEANED_FILE}.h")
-
-    if(ARG_DEBUG)
-      message("  CXX_FILE=${CXX_FILE}")
-      message("  H_FILE=${H_FILE}")
-    endif()
-
-    list(APPEND ${SRCS} "${CXX_FILE}")
-    list(APPEND ${HDRS} "${H_FILE}")
+    list(APPEND local_srcs "${cxx_file}")
+    list(APPEND local_hdrs "${h_file}")
 
     add_custom_command(
-      OUTPUT "${H_FILE}" "${CXX_FILE}"
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_OUTPATH}
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${HDR_OUTPATH}
-      COMMAND utils::packet_generator --inputs "${MATCH_PATH}" cpp --output-header-folder "${HDR_OUTPATH}" --output-source-folder "${SRC_OUTPATH}"
-      DEPENDS ${ABS_FILE} utils::packet_generator
-      COMMENT "Running C++ packetGenerator compiler on ${MATCH_PATH} with root ${IDLROOT}, generating: ${CXX_FILE}, ${H_FILE}"
-      VERBATIM)
+      OUTPUT "${cxx_file}" "${h_file}"
+
+      COMMAND ${CMAKE_COMMAND} -E make_directory
+              "${SRC_OUTPATH}"
+      COMMAND ${CMAKE_COMMAND} -E make_directory
+              "${HDR_OUTPATH}"
+
+      COMMAND $<TARGET_FILE:utils::packet_generator>
+              --inputs "${abs_file}"
+              cpp
+              --output-header-folder "${HDR_OUTPATH}"
+              --output-source-folder "${SRC_OUTPATH}"
+
+      DEPENDS
+        "${abs_file}"
+        utils::packet_generator
+
+      COMMENT "Generating packets from ${idl_file}"
+      VERBATIM
+    )
   endforeach()
-  
-  add_custom_target(${TARGET}_generated
-    DEPENDS utils::packet_generator ${${SRCS}} ${${HDRS}}
+
+  set_source_files_properties(
+    ${local_srcs}
+    ${local_hdrs}
+    PROPERTIES GENERATED TRUE
   )
-  
-  set_source_files_properties(${${SRCS}} PROPERTIES GENERATED TRUE)
-  set(${SRCS} ${${SRCS}} PARENT_SCOPE)
 
-  set_source_files_properties(${${HDRS}} PROPERTIES GENERATED TRUE)
-  set(${HDRS} ${${HDRS}} PARENT_SCOPE)
+  target_sources(${TARGET}
+    PRIVATE
+      ${local_srcs}
+      ${local_hdrs}
+  )
 
+  target_include_directories(${TARGET}
+    PRIVATE
+      ${HDR_OUTPATH}
+  )
+
+  add_dependencies(${TARGET} utils::packet_generator)
 endfunction()
