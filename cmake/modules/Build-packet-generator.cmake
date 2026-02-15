@@ -11,7 +11,7 @@ endif()
 FetchContent_Declare(
   idl
   GIT_REPOSITORY https://github.com/dev-osrose/IDL.git
-  GIT_TAG <pinned_commit_hash>  # IMPORTANT: pin this
+  GIT_TAG fc00533026404ee09b99514ce49369c4534740bd
 )
 
 FetchContent_MakeAvailable(idl)
