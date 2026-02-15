@@ -25,9 +25,18 @@ SET(SOURCES_BASE
 )
 
 set(IDL_TYPE_FILES
+  packets/bullet_type.xml
   packets/equipped_item.xml
   packets/equipped_position.xml
+  packets/equipped_position_ride.xml
+  packets/hotbar_icon.xml
+  packets/hotbar_item.xml
   packets/item.xml
+  packets/mob_animation.xml
+  packets/party_member.xml
+  packets/party_rule.xml
+  packets/riding_item.xml
+  packets/skill.xml
 )
 
 set(IDL_FILES
@@ -228,20 +237,17 @@ set(IDL_FILES
   packets/srv_whisper_chat.xml
 )
 
-set(args
-  TARGET RosePackets
-  IDLFILES ${IDL_FILES}
+add_library(${PROJECT} STATIC ${SOURCES_BASE} ${SOURCES_HEADER})
+
+target_generate_packets(${PROJECT}
   IDLROOT ${CMAKE_CURRENT_SOURCE_DIR}/packets
-  SRC_OUTPATH ${CMAKE_GEN_SRC_DIR}/packets
-  HDR_OUTPATH ${CMAKE_GEN_SRC_DIR}/packets
+  OUTDIR  ${CMAKE_GEN_SRC_DIR}/packets
+  IDLFILES ${IDL_FILES}
 )
 
-generate_packets(PACKET_SOURCES PACKET_HEADERS ${args})
-
-add_library(${PROJECT} STATIC ${SOURCES_BASE} ${PACKET_SOURCES} ${PACKET_HEADERS} ${SOURCES_HEADER})
 target_include_directories(${PROJECT}
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_GEN_SRC_DIR}/packets>
+    $<BUILD_INTERFACE:${CMAKE_GEN_SRC_DIR}/packets/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
@@ -250,7 +256,6 @@ if (NOT MSVC)
 endif()
 
 add_dependencies(${PROJECT} osIROSE-common-core)
-add_dependencies(${PROJECT} RosePackets_generated)
 target_link_libraries(${PROJECT}
   PUBLIC
   osIROSE-common-core
@@ -258,14 +263,11 @@ target_link_libraries(${PROJECT}
 
 list(TRANSFORM SOURCES_HEADER PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 
-set(HEADERS "${SOURCES_HEADER};${PACKET_HEADERS}")
-
 set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER "${HEADERS}")
+  PUBLIC_HEADER "${SOURCES_HEADER}"
+)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCES_BASE})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILES ${SOURCES_HEADER})
-source_group(TREE ${CMAKE_GEN_SRC_DIR}/packets PREFIX "Packet Source Files" FILES ${PACKET_SOURCES})
-source_group(TREE ${CMAKE_GEN_SRC_DIR}/packets PREFIX "Packet Header Files" FILES ${PACKET_HEADERS})
 
 SET_PROPERTY(TARGET ${PROJECT}                PROPERTY FOLDER "Common")
