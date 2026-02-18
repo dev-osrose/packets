@@ -73,7 +73,9 @@ set(IDL_FILES
   packets/cli_hotbar_set_icon_req.xml
   packets/cli_hp_req.xml
   packets/cli_join_server_req.xml
+  packets/cli_join_server_token_req.xml
   packets/cli_login_req.xml
+  packets/cli_login_token_req.xml
   packets/cli_logout_req.xml
   packets/cli_memo.xml
   packets/cli_messenger_chat.xml
