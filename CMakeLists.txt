@@ -36,7 +36,7 @@ include(FetchContent)
 FetchContent_Declare(
     asio
     GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
-    GIT_TAG        asio-1-30-2
+    GIT_TAG        asio-1-36-0
     GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(asio)

@@ -77,9 +77,12 @@ bool CNetwork_Asio::init(std::string _ip, uint16_t _port) {
 
   asio::error_code ec;
   tcp::resolver resolver(*networkService_->Get_IO_Service());
-  auto endpoint_iterator = resolver.resolve(_ip, std::to_string(_port), ec);
-  if (!ec) network_address_ = endpoint_iterator->endpoint().address().to_string();
-  else     network_address_ = _ip;
+  // resolve() returns basic_resolver_results<tcp> (a range) in ASIO 1.13+
+  auto results = resolver.resolve(_ip, std::to_string(_port), ec);
+  if (!ec && !results.empty())
+    network_address_ = results.begin()->endpoint().address().to_string();
+  else
+    network_address_ = _ip;
   network_port_ = _port;
   return true;
 }
@@ -168,7 +171,8 @@ bool CNetwork_Asio::connect() {
 
 bool CNetwork_Asio::listen() {
   OnListen();
-  tcp::endpoint endpoint(asio::ip::address::from_string(network_address_), network_port_);
+  // asio::ip::address::from_string() is deprecated in ASIO 1.13+; use make_address()
+  tcp::endpoint endpoint(asio::ip::make_address(network_address_), network_port_);
   listener_.open(endpoint.protocol());
   listener_.set_option(tcp::acceptor::reuse_address(true));
   listener_.non_blocking(true);
@@ -236,14 +240,16 @@ void CNetwork_Asio::ProcessSend() {
         } else {
           logger_->debug("ProcessSend: error = {}: {}", error.value(), error.message());
 
+          // In ASIO 1.13+ error values live directly in asio::error::,
+          // not in the nested asio::error::basic_errors:: enum scope.
           switch (error.value()) {
-            case asio::error::basic_errors::connection_aborted:
-            case asio::error::basic_errors::connection_reset:
-            case asio::error::basic_errors::network_reset:
-            case asio::error::basic_errors::network_down:
-            case asio::error::basic_errors::broken_pipe:
-            case asio::error::basic_errors::shut_down:
-            case asio::error::basic_errors::timed_out:
+            case asio::error::connection_aborted:
+            case asio::error::connection_reset:
+            case asio::error::network_reset:
+            case asio::error::network_down:
+            case asio::error::broken_pipe:
+            case asio::error::shut_down:
+            case asio::error::timed_out:
               shutdown();
               break;
             default:
@@ -334,27 +340,29 @@ bool CNetwork_Asio::recv_data([[maybe_unused]] uint16_t _size /*= 6*/) {
             }
           } else {
             switch (errorCode.value()) {
+              // In ASIO 1.13+ error values live directly in asio::error::,
+              // not in nested asio::error::basic_errors:: / misc_errors:: scopes.
               case asio::error::try_again:
                 if (this->is_active())
                   recv_data();
                 break;
 
-              case asio::error::basic_errors::not_connected:
+              case asio::error::not_connected:
                 if (shutdown()) {
                   logger_->info("Socket {} is not connected, shutting down.", get_id());
                   OnDisconnected();
                 }
                 break;
 
-              case asio::error::basic_errors::connection_aborted:
-              case asio::error::basic_errors::operation_aborted:
-              case asio::error::basic_errors::connection_reset:
-              case asio::error::basic_errors::network_reset:
-              case asio::error::basic_errors::network_down:
-              case asio::error::basic_errors::broken_pipe:
-              case asio::error::basic_errors::shut_down:
-              case asio::error::basic_errors::timed_out:
-              case asio::error::misc_errors::eof:
+              case asio::error::connection_aborted:
+              case asio::error::operation_aborted:
+              case asio::error::connection_reset:
+              case asio::error::network_reset:
+              case asio::error::network_down:
+              case asio::error::broken_pipe:
+              case asio::error::shut_down:
+              case asio::error::timed_out:
+              case asio::error::eof:
                 if (shutdown()) {
                   logger_->info("Socket {} ({}) disconnected.", get_id(), get_name());
                   OnDisconnected();
@@ -407,7 +415,10 @@ void CNetwork_Asio::AcceptConnection() {
 // ---------------------------------------------------------------------------
 
 void CNetwork_Asio::dispatch(std::function<void()> _handler) {
-  asio::dispatch([_handler]() { _handler(); });
+  // ASIO 1.18+: dispatch() requires an explicit executor; pass the io_context's
+  // executor so the handler runs on the network thread pool.
+  asio::dispatch(networkService_->Get_IO_Service()->get_executor(),
+                 [_handler]() { _handler(); });
 }
 
 } // namespace Core
