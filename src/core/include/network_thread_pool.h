@@ -41,50 +41,68 @@ namespace Core {
  * \brief Singleton that owns the ASIO io_context and runs it on a thread pool.
  *
  * Call GetInstance() to obtain the singleton.  The io_context runs on
- * hardware_concurrency() threads.  A work guard keeps it alive until
- * the singleton is destroyed.
+ * up to hardware_concurrency() threads (optionally capped by maxthreads).
+ * A work guard keeps it alive until the singleton is destroyed.
  */
 class NetworkThreadPool {
 public:
-    static NetworkThreadPool& GetInstance() {
-        if (!instance_) {
-            instance_ = new NetworkThreadPool();
-        }
-        return *instance_;
+  /// Returns the singleton, creating it with the given thread cap on first call.
+  /// maxthreads == 0 means "use hardware_concurrency()".
+  static NetworkThreadPool& GetInstance(uint16_t maxthreads = 0) {
+    if (instance_ == nullptr) instance_ = new NetworkThreadPool(maxthreads);
+    return *instance_;
+  }
+
+  /// Destroy the singleton (releases io_context and joins threads).
+  static void DeleteInstance() {
+    if (instance_ != nullptr) {
+      delete instance_;
+      instance_ = nullptr;
     }
+  }
 
-    static void DestroyInstance() {
-        delete instance_;
-        instance_ = nullptr;
-    }
+  /// Alias kept for backward compatibility.
+  static void DestroyInstance() { DeleteInstance(); }
 
-    asio::io_context* Get_IO_Service() { return &io_context_; }
+  asio::io_context* Get_IO_Service() { return &io_context_; }
 
-    ~NetworkThreadPool() {
-        work_guard_.reset();
-        io_context_.stop();
-        // Thread pool destructor joins all threads
-    }
+  uint16_t GetThreadCount() const { return static_cast<uint16_t>(thread_count_); }
 
-    NetworkThreadPool(const NetworkThreadPool&)            = delete;
-    NetworkThreadPool& operator=(const NetworkThreadPool&) = delete;
+  ~NetworkThreadPool() {
+    work_guard_.reset();
+    io_context_.stop();
+    // ThreadPool destructor joins all worker threads
+  }
+
+  NetworkThreadPool(const NetworkThreadPool&)            = delete;
+  NetworkThreadPool& operator=(const NetworkThreadPool&) = delete;
 
 private:
-    NetworkThreadPool()
-        : work_guard_(asio::make_work_guard(io_context_))
-        , thread_pool_(std::thread::hardware_concurrency())
-    {
-        const size_t n = thread_pool_.size();
-        for (size_t i = 0; i < n; ++i) {
-            thread_pool_.enqueue([this] { io_context_.run(); });
-        }
+  static size_t computeThreadCount(uint16_t maxthreads) {
+    size_t n = std::thread::hardware_concurrency();
+    if (n == 0) n = 1;
+    if (maxthreads != 0 && n > static_cast<size_t>(maxthreads))
+      n = static_cast<size_t>(maxthreads);
+    return n;
+  }
+
+  explicit NetworkThreadPool(uint16_t maxthreads = 0)
+      : thread_count_(computeThreadCount(maxthreads))
+      , io_context_()
+      , work_guard_(asio::make_work_guard(io_context_))
+      , thread_pool_(thread_count_)
+  {
+    for (size_t i = 0; i < thread_count_; ++i) {
+      thread_pool_.enqueue([this] { io_context_.run(); });
     }
+  }
 
-    static NetworkThreadPool* instance_;
+  static NetworkThreadPool* instance_;
 
-    asio::io_context                                     io_context_;
-    asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
-    ThreadPool                                           thread_pool_;
+  size_t                                               thread_count_;
+  asio::io_context                                     io_context_;
+  asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
+  ThreadPool                                           thread_pool_;
 };
 
 } // namespace Core

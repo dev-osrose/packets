@@ -12,71 +12,109 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <sstream>
 #include "logconsole.h"
 
-#include <spdlog/sinks/stdout_color_sinks.h>
 #ifdef _WIN32
-#include <spdlog/sinks/msvc_sink.h>
+  #include <spdlog/sinks/msvc_sink.h>
+#else
+  #include <spdlog/sinks/syslog_sink.h>
 #endif
-#include <vector>
-#include <mutex>
 
 namespace Core {
 
-namespace {
+spdlog::level::level_enum CLog::level_ = spdlog::level::info;
 
-// Logger names for each log_type
-static const char* kLoggerNames[] = {
-    "general",
-    "network",
-    "db",
-    "file",
-};
+void CLog::SetLevel(spdlog::level::level_enum _level) {
+  level_ = _level;
 
-static std::mutex              g_initMutex;
-static bool                    g_initialised = false;
-static std::shared_ptr<spdlog::logger> g_loggers[static_cast<int>(log_type::MAX_LOG_TYPE)];
+  std::ostringstream format;
+  format << "[%H:%M:%S.%e.%f %z] [%^%L%$]";
 
-void initialise() {
-    std::lock_guard<std::mutex> lock(g_initMutex);
-    if (g_initialised) return;
+  if (level_ <= spdlog::level::debug) format << " [thread %t]";
+  format << " [%n]" << " %v ";
+  spdlog::set_pattern(format.str());
+}
 
-    // Build shared sinks
-    std::vector<spdlog::sink_ptr> sinks;
-    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-#ifdef _WIN32
-    sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
+std::weak_ptr<spdlog::logger> CLog::GetLogger(log_type _type) {
+  std::weak_ptr<spdlog::logger> logger;
+  try {
+    switch (_type) {
+      case log_type::NETWORK:
+        logger = spdlog::get("net");
+        break;
+
+      case log_type::DATABASE:
+        logger = spdlog::get("db");
+        break;
+
+      case log_type::GENERAL:
+      default:
+        logger = spdlog::get("server");
+        break;
+    }
+
+    if (logger.expired()) {
+      std::ostringstream format;
+      format << "[%H:%M:%S.%e.%f %z] [%^%L%$]";
+
+      if (level_ <= spdlog::level::debug) format << " [thread %t]";
+      format << " [%n]" << " %v ";
+
+      std::string path, name;
+
+      switch (_type) {
+        case log_type::NETWORK: {
+          path = "logs/network";
+          name = "net";
+          break;
+        }
+        case log_type::DATABASE: {
+          path = "logs/database";
+          name = "db";
+          break;
+        }
+        case log_type::GENERAL:
+        default: {
+          path = "logs/server";
+          name = "server";
+          break;
+        }
+      }
+#ifndef DISABLE_ASYNC_LOGGING
+      if (spdlog::thread_pool() == nullptr)
+        spdlog::init_thread_pool(8192, 1);
 #endif
+      std::vector<spdlog::sink_ptr> sinks;
 
-    const int count = static_cast<int>(log_type::MAX_LOG_TYPE);
-    for (int i = 0; i < count; ++i) {
-        auto logger = std::make_shared<spdlog::logger>(kLoggerNames[i], sinks.begin(), sinks.end());
-        logger->set_level(spdlog::level::trace);
-        logger->flush_on(spdlog::level::warn);
-        spdlog::register_logger(logger);
-        g_loggers[i] = logger;
+      auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+      sinks.push_back(console_sink);
+#ifdef _WIN32
+      sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
+#else
+  #ifdef SPDLOG_ENABLE_SYSLOG
+      auto syslog_sink = std::make_shared<spdlog::sinks::syslog_sink_mt>(name.c_str());
+      syslog_sink->set_level(spdlog::level::warn);
+      sinks.push_back(syslog_sink);
+  #endif
+#endif
+#ifndef DISABLE_ASYNC_LOGGING
+      auto combined_logger = std::make_shared<spdlog::async_logger>(
+          name.c_str(), sinks.begin(), sinks.end(),
+          spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+#else
+      auto combined_logger = std::make_shared<spdlog::logger>(
+          name.c_str(), sinks.begin(), sinks.end());
+#endif
+      combined_logger->set_level(level_);
+      combined_logger->set_pattern(format.str());
+      spdlog::register_logger(combined_logger);
+
+      return combined_logger;
     }
-
-    g_initialised = true;
+  } catch (const spdlog::spdlog_ex& ex) {
+    std::cout << "Log failed: " << ex.what() << std::endl;
+  }
+  return logger;
 }
-
-} // anonymous namespace
-
-/*static*/
-std::weak_ptr<spdlog::logger> CLog::GetLogger(log_type type) {
-    initialise();
-    const int idx = static_cast<int>(type);
-    if (idx < 0 || idx >= static_cast<int>(log_type::MAX_LOG_TYPE))
-        return {};
-    return g_loggers[idx];
-}
-
-/*static*/
-void CLog::SetLevel(spdlog::level::level_enum level) {
-    initialise();
-    for (auto& lg : g_loggers) {
-        if (lg) lg->set_level(level);
-    }
-}
-
 } // namespace Core

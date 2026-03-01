@@ -12,39 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LOGCONSOLE_H_
-#define LOGCONSOLE_H_
+#ifndef __CONSOLE_H_
+#define __CONSOLE_H_
 
-#include <memory>
+#include <ios>
+#include <iomanip>
+#include <iostream>
 #include <spdlog/spdlog.h>
+#include <spdlog/async.h>
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Core {
 
 enum class log_type {
-    GENERAL = 0,
-    NETWORK,
-    DB,
-    FILE,
-    MAX_LOG_TYPE
+  GENERAL,
+  NETWORK,
+  DATABASE,
+  SYSTEM,
+  ASSERT,
+  SCRIPTLOADER,
 };
 
-/**
- * \class CLog
- * \brief Thin wrapper around spdlog that provides named loggers per log_type.
- *
- * Usage:
- *   auto logger = CLog::GetLogger(Core::log_type::NETWORK).lock();
- *   if (logger) logger->info("Connected.");
- */
 class CLog {
 public:
-    static std::weak_ptr<spdlog::logger> GetLogger(log_type type);
-    static void SetLevel(spdlog::level::level_enum level);
+  static std::weak_ptr<spdlog::logger> GetLogger(log_type _type);
+  static void SetLevel(spdlog::level::level_enum _level = spdlog::level::info);
 
 private:
-    static void EnsureInitialised();
+  static spdlog::level::level_enum level_;
 };
+}
 
-} // namespace Core
-
-#endif // LOGCONSOLE_H_
+#endif // __CONSOLE_H_
