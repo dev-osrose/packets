@@ -24,6 +24,50 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
 endif()
 
+# ---------------------------------------------------------------------------
+# Networking options
+# ---------------------------------------------------------------------------
+option(ENABLE_SSL "Enable TLS/SSL support via OpenSSL and asio::ssl" OFF)
+
+# ---------------------------------------------------------------------------
+# ASIO (standalone, header-only — no Boost)
+# ---------------------------------------------------------------------------
+include(FetchContent)
+FetchContent_Declare(
+    asio
+    GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
+    GIT_TAG        asio-1-30-2
+    GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(asio)
+
+if(NOT TARGET asio::asio)
+    add_library(asio::asio INTERFACE IMPORTED GLOBAL)
+    target_include_directories(asio::asio INTERFACE ${asio_SOURCE_DIR}/asio/include)
+    target_compile_definitions(asio::asio INTERFACE
+        ASIO_STANDALONE
+        _WIN32_WINNT=0x0601
+    )
+endif()
+
+# ---------------------------------------------------------------------------
+# spdlog
+# ---------------------------------------------------------------------------
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG        v1.14.1
+    GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(spdlog)
+
+# ---------------------------------------------------------------------------
+# OpenSSL (only required when SSL is enabled)
+# ---------------------------------------------------------------------------
+if(ENABLE_SSL)
+    find_package(OpenSSL REQUIRED)
+endif()
+
 add_subdirectory(src)
 
 install(TARGETS osIROSE-common-core
