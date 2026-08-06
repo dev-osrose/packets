@@ -27,12 +27,52 @@
 #include <memory>
 #include <functional>
 #include <chrono>
+#include <string>
 #include <thread>
 #include <iostream>
 
 #include "platform_defines.h"
 
 namespace Core {
+
+#ifdef USE_SSL
+/*!
+ * \struct SslServerConfig
+ * \brief TLS material for a listening socket.
+ *
+ * Passed to INetwork::enable_ssl_server() before listen().  In a USE_SSL build
+ * listen() fails unless a valid configuration has been installed - there is no
+ * plaintext fallback and no self-signed auto-generation.
+ */
+struct SslServerConfig {
+  std::string certificate_chain_file;           //!< required, PEM
+  std::string private_key_file;                 //!< required, PEM
+  std::string private_key_password;             //!< optional
+  std::string dh_params_file;                   //!< optional
+  std::string client_ca_file;                   //!< optional; required if require_client_cert
+  std::string cipher_list;                      //!< optional override
+  bool        require_client_cert = false;      //!< mTLS
+  uint32_t    handshake_timeout_seconds = 10;   //!< 0 disables the timeout
+};
+
+/*!
+ * \struct SslClientConfig
+ * \brief TLS material for an outbound connection.
+ *
+ * Passed to INetwork::enable_ssl_client() before connect().  Peer verification
+ * is on by default; disabling it is an explicit, loudly-logged opt-out.
+ */
+struct SslClientConfig {
+  bool        verify_peer = true;          //!< secure by default
+  std::string ca_file;                     //!< PEM bundle; for private CAs
+  std::string ca_path;                     //!< optional directory of CAs
+  std::string sni_hostname;                //!< defaults to the init() hostname
+  std::string certificate_chain_file;      //!< optional, mTLS
+  std::string private_key_file;            //!< optional, mTLS
+  std::string private_key_password;        //!< optional
+  std::string cipher_list;                 //!< optional override
+};
+#endif
 
 /*!
  * \class INetwork
@@ -78,6 +118,32 @@ class INetwork {
 
   virtual bool is_active() const = 0;
   virtual void set_active(bool _val) = 0;
+
+#ifdef USE_SSL
+  /*!
+   * \brief Install the TLS material this socket terminates connections with.
+   *
+   * Must be called before listen(); listen() fails without it.  Declared here
+   * rather than only on CNetwork_Asio because consumers hold sockets as
+   * std::unique_ptr<INetwork> and would otherwise need a downcast to reach it.
+   *
+   * \return false if a required file is missing or unreadable, leaving the
+   *         socket unconfigured.
+   */
+  virtual bool enable_ssl_server([[maybe_unused]] const SslServerConfig& _cfg) { return false; }
+
+  /*!
+   * \brief Install the TLS material this socket connects out with.
+   *
+   * Must be called before connect().  If it is never called, connect() applies
+   * SslClientConfig's defaults - which verify the peer against the OS trust
+   * store.
+   *
+   * \return false if a required file is missing, or if called after the socket
+   *         is already open (rebinding mid-session would silently drop TLS).
+   */
+  virtual bool enable_ssl_client([[maybe_unused]] const SslClientConfig& _cfg) { return false; }
+#endif
 
   virtual void set_id(uint32_t _val) { network_id_ = _val; }
   virtual void set_type(uint32_t _val) { network_type_ = _val; }

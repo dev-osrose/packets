@@ -31,6 +31,8 @@
   #endif
 #endif
 
+#include <atomic>
+#include <mutex>
 #include <thread>
 #include "threadpool.h"
 
@@ -43,23 +45,36 @@ namespace Core {
  * Call GetInstance() to obtain the singleton.  The io_context runs on
  * up to hardware_concurrency() threads (optionally capped by maxthreads).
  * A work guard keeps it alive until the singleton is destroyed.
+ *
+ * \warning Lifetime: every socket built on this pool holds a raw pointer to it
+ * and was constructed against the io_context it owns.  DeleteInstance() destroys
+ * that io_context, so it must only be called once every INetwork/CNetwork_Asio
+ * object is already gone.  Destroying a socket after the pool has been deleted
+ * is a use-after-free.  Scope your servers so they are destroyed first:
+ *
+ * \code
+ *   {
+ *     CLoginServer clientServer(false);
+ *     ...
+ *   }   // servers destroyed here, while the io_context is still alive
+ *   Core::NetworkThreadPool::DeleteInstance();
+ * \endcode
+ *
+ * GetInstance()/DeleteInstance() are themselves thread safe.
  */
 class NetworkThreadPool {
 public:
   /// Returns the singleton, creating it with the given thread cap on first call.
   /// maxthreads == 0 means "use hardware_concurrency()".
-  static NetworkThreadPool& GetInstance(uint16_t maxthreads = 0) {
-    if (instance_ == nullptr) instance_ = new NetworkThreadPool(maxthreads);
-    return *instance_;
-  }
+  ///
+  /// The argument is only honoured by the call that actually creates the pool;
+  /// a later call passing a different non-zero value logs a warning and is
+  /// otherwise ignored.
+  static NetworkThreadPool& GetInstance(uint16_t maxthreads = 0);
 
   /// Destroy the singleton (releases io_context and joins threads).
-  static void DeleteInstance() {
-    if (instance_ != nullptr) {
-      delete instance_;
-      instance_ = nullptr;
-    }
-  }
+  /// See the lifetime warning on the class: all sockets must already be gone.
+  static void DeleteInstance();
 
   /// Alias kept for backward compatibility.
   static void DestroyInstance() { DeleteInstance(); }
@@ -97,7 +112,8 @@ private:
     }
   }
 
-  static NetworkThreadPool* instance_;
+  static std::atomic<NetworkThreadPool*> instance_;
+  static std::mutex                      instance_mutex_;
 
   size_t                                               thread_count_;
   asio::io_context                                     io_context_;
