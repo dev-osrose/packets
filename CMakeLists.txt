@@ -70,6 +70,38 @@ endif()
 
 add_subdirectory(src)
 
+# ---------------------------------------------------------------------------
+# Tests
+#
+# Off by default when this project is consumed as a subdirectory (osIROSE-new
+# pulls it in with FetchContent), so a consumer neither downloads googletest nor
+# gets our test binaries registered with its own ctest.
+# ---------------------------------------------------------------------------
+if(NOT DEFINED PROJECT_IS_TOP_LEVEL)
+  # PROJECT_IS_TOP_LEVEL only exists from CMake 3.21; this file declares 3.16.
+  if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(PROJECT_IS_TOP_LEVEL ON)
+  else()
+    set(PROJECT_IS_TOP_LEVEL OFF)
+  endif()
+endif()
+
+option(OSIROSE_COMMON_BUILD_TESTS "Build the osIROSE-common unit tests"
+       ${PROJECT_IS_TOP_LEVEL})
+
+if(OSIROSE_COMMON_BUILD_TESTS)
+  FetchContent_Declare(googletest
+      GIT_REPOSITORY https://github.com/google/googletest.git
+      GIT_TAG        v1.15.2
+      GIT_SHALLOW    TRUE
+  )
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  FetchContent_MakeAvailable(googletest)
+
+  enable_testing()
+  add_subdirectory(tests)
+endif()
+
 install(TARGETS osIROSE-common-core
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
