@@ -23,6 +23,7 @@
 #include <functional>
 #include <future>
 #include <stdexcept>
+#include <type_traits>
 
 namespace Core {
 
@@ -68,11 +69,15 @@ public:
     ThreadPool(const ThreadPool&)            = delete;
     ThreadPool& operator=(const ThreadPool&) = delete;
 
+    // std::invoke_result rather than std::result_of: the latter was deprecated
+    // in C++17 and removed in C++20. libstdc++ still ships it, so GCC builds
+    // never noticed; MSVC does not, and osIROSE-new compiles its own targets
+    // as C++23, so every Windows build failed on this header.
     template<typename F, typename... Args>
     auto enqueue(F&& f, Args&&... args)
-        -> std::future<typename std::result_of<F(Args...)>::type>
+        -> std::future<std::invoke_result_t<F, Args...>>
     {
-        using RetType = typename std::result_of<F(Args...)>::type;
+        using RetType = std::invoke_result_t<F, Args...>;
         auto task = std::make_shared<std::packaged_task<RetType()>>(
             std::bind(std::forward<F>(f), std::forward<Args>(args)...)
         );
