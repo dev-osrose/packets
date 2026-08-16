@@ -106,9 +106,14 @@ class CNetwork_Asio : public INetwork {
    * \brief connect() that returns only once the TLS handshake has resolved.
    *
    * connect() is asynchronous: it returns as soon as the TCP connection is up,
-   * while the handshake is still in flight, so is_active() is still false on
-   * return.  This variant blocks until the handshake succeeds, fails, or the
-   * timeout elapses, and reports the real outcome.
+   * while the handshake is still in flight.  This variant blocks until the
+   * handshake succeeds, fails, or the timeout elapses, and reports the real
+   * outcome.
+   *
+   * \note Waiting on is_active() instead does not work. This class only raises
+   * it once the handshake completes, but it is a plain liveness flag that
+   * owning code may set at any time - RoseCommon::CRoseClient, for one, raises
+   * it in its constructor - so it can read true before a handshake has begun.
    *
    * \warning Must NOT be called from a network completion handler.  It blocks
    * the calling thread, and the handshake needs a pool thread to complete on -
@@ -117,7 +122,8 @@ class CNetwork_Asio : public INetwork {
    * In a non-SSL build there is no handshake, so this is equivalent to
    * connect(); callers stay portable across both build flavours.
    */
-  bool connect_and_wait(std::chrono::milliseconds _timeout = std::chrono::seconds(10));
+  virtual bool connect_and_wait(
+      std::chrono::milliseconds _timeout = std::chrono::seconds(10)) override;
 
   virtual bool send_data(std::unique_ptr<uint8_t[]> _buffer) override;
   virtual bool recv_data(uint16_t _size = MAX_PACKET_SIZE) override;

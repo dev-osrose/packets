@@ -112,6 +112,29 @@ class INetwork {
   virtual bool init(std::string _ip, uint16_t _port) = 0;
   virtual bool shutdown(bool _final = false) = 0;
   virtual bool connect() = 0;
+  /*!
+   * \brief connect() that returns only once the connection is ready to read.
+   *
+   * In a TLS build connect() returns with the handshake still in flight, and
+   * posting a read before it resolves aborts the handshake - closing the
+   * transport without a close_notify and leaving the peer to log a truncated
+   * stream.  Any caller that follows a connect with recv_data() must use this.
+   *
+   * Declared here rather than only on CNetwork_Asio because consumers hold
+   * sockets as std::unique_ptr<INetwork> and would otherwise need a downcast
+   * to reach it - the same reasoning as enable_ssl_client() below.
+   *
+   * \note is_active() is not a substitute. It reports the socket's liveness
+   *       flag, which owning code is free to raise on construction, so it can
+   *       already be true before a handshake has even started.
+   *
+   * The default forwards to connect(), which is the right answer for any
+   * transport that has no handshake of its own.
+   */
+  virtual bool connect_and_wait(
+      [[maybe_unused]] std::chrono::milliseconds _timeout = std::chrono::seconds(10)) {
+    return connect();
+  }
   virtual bool listen() = 0;
   virtual bool reconnect() = 0;
   virtual bool disconnect() = 0;
