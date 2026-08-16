@@ -281,8 +281,11 @@ bool CNetwork_Asio::connect_impl(std::shared_ptr<std::promise<bool>> _ready) {
       }));
   return true;
 #else
-  OnConnected();
+  // set_active() before OnConnected(), matching the TLS path above: handlers
+  // arm their next read only while is_active(), so a callback that starts
+  // receiving here must not race a completion that lands before the flag is up.
   set_active(true);
+  OnConnected();
   DrainPendingSends();
   // No handshake to wait for, so connect_and_wait() resolves immediately here
   // and stays equivalent to connect() in this build flavour.
@@ -333,6 +336,12 @@ bool CNetwork_Asio::reconnect() {
   disconnect();
   // connect() rebuilds the TLS stream, so the spent engine left behind by
   // disconnect() is not reused.
+  //
+  // Deliberately connect() and not connect_and_wait(): the usual caller is
+  // OnShutdown(), which runs from a read completion handler, and blocking a
+  // pool thread there can deadlock the handshake it is waiting on. Callers
+  // that need to receive after reconnecting must arm the read from
+  // OnConnected(), which fires once the handshake has resolved.
   return connect();
 }
 
