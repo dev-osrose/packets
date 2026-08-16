@@ -361,17 +361,29 @@ TEST(SslClientConfig, RejectsAnUnusableCipherList) {
   EXPECT_FALSE(socket.enable_ssl_client(cfg));
 }
 
-// Rebinding the stream to a different context mid-session would silently drop
-// TLS on an already-established connection. The open-socket half of the same
-// guard is covered in test_ssl_handshake.cpp against a real connection.
-TEST(SslClientConfig, RejectsConfigurationOfAnActiveSocket) {
+// Regression test. The guard used to read `is_active() || is_open()`, which
+// looks reasonable and is not: active_ is a consumer-owned flag, and
+// RoseCommon::CRoseClient sets it in its constructor (croseclient.cpp:26). So
+// every char and map ISC client arrived here already "active", having never
+// been connected to anything, and TLS configuration was refused outright:
+//
+//   [E] [net]    enable_ssl_client() must be called before connect().
+//   [C] [server] Could not configure TLS for the char -> login ISC connection.
+//
+// This is that exact shape: flagged active, transport never opened.
+TEST(SslClientConfig, AcceptsConfigurationOfAFlaggedButUnconnectedSocket) {
   Core::CNetwork_Asio socket;
-  socket.set_active(true);
+  socket.set_active(true);  // what CRoseClient's constructor does
 
-  EXPECT_FALSE(socket.enable_ssl_client(Core::SslClientConfig{}));
+  EXPECT_TRUE(socket.enable_ssl_client(Core::SslClientConfig{}))
+      << "a socket that was never connected must still be configurable";
 
   socket.set_active(false);
 }
+
+// The guard that does matter is covered against a real connection in
+// test_ssl_handshake.cpp (EnableSslClientIsRefusedOnAConnectedSocket): once the
+// transport is open, rebinding the stream would silently drop TLS.
 
 #else  // !USE_SSL
 

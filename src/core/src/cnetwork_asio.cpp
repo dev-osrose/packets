@@ -791,7 +791,7 @@ bool CNetwork_Asio::enable_ssl_server(const SslServerConfig& _cfg) {
 bool CNetwork_Asio::enable_ssl_client(const SslClientConfig& _cfg) {
   // Rebinding the stream is only safe before a handshake; doing it mid-session
   // would silently drop TLS.
-  if (is_active() || lowest_layer().is_open()) {
+  if (lowest_layer().is_open()) {
     logger_->error("enable_ssl_client() must be called before connect().");
     return false;
   }
