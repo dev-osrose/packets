@@ -1,7 +1,7 @@
 <packet ePacketType = "PAKWC_CRAFT_ENHANCE_REPLY">
     <includeXml path = "item.xml" />
     <element name = "result" type = "CraftEnhancementResult" />
-    <element name = "items" type = "IndexAndItem" occurs = "unbounded" occurSize = "uint8_t" default = "{}" />
+    <element name = "items" type = "IndexAndItem" occurs = "unbounded" occursSize = "uint8_t" default = "{}" />
 
     <simpleType name = "CraftEnhancementResult">
         <restriction base = "uint8_t">

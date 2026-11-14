@@ -1,10 +1,15 @@
 <packet ePacketType = "PAKCS_CRAFT_ENHANCE_REQ">
 	<element name = "enhancement" type = "CraftEnhancementType" />
-	<element name = "data" type = "CraftEnhancementData" />
+	<!-- What follows depends on the type (the client's cli_CRAFT_*_REQ):
+	     GEM: the equipment's slot, the gem's slot (two uint8);
+	     DISASSEMBLE_*: the skill slot or NPC (int16), the item's slot (uint8);
+	     UPGRADE_*: the skill slot or NPC (int16), the item's slot (uint8),
+	     then three material slots (uint8). -->
+	<element name = "payload" type = "uint8_t" occurs = "unbounded" default = "{}" />
 
 	<simpleType name = "CraftEnhancementType">
 		<restriction base = "uint8_t">
-			<enumeration value = "GEM" />
+			<enumeration value = "GEM" id = "1" />
 			<enumeration value = "DISASSEMBLE_SKILL" />
 			<enumeration value = "DISASSEMBLE_NPC" />
 			<enumeration value = "UPGRADE_SKILL" />
@@ -12,22 +17,4 @@
 		</restriction>
 	</simpleType>
 
-
-	<complexType name = "CraftEnhancementData">
-		<choice>
-			<sequence inline = "true">
-				<element name = "gem_target" type = "uint8_t" />
-				<element name = "gem_source" type = "uint8_t" />
-			</sequence>
-			<sequence inline = "true">
-				<element name = "disassemble_source" type = "uint8_t" />
-				<element name = "disassemble_target" type = "uint8_t" />
-			</sequence>
-			<sequence inline = "true">
-				<element name = "upgrade_source" type = "uint8_t" />
-				<element name = "upgrade_target" type = "uint8_t" />
-			</sequence>
-			<element name = "data" type = "uint16_t" />
-		</choice>
-	</complexType>
 </packet>
