@@ -1,11 +1,12 @@
 <packet ePacketType = "PAKCS_TOGGLE_MOVE">
+    <!-- The client's TOGGLE_TYPE_*: what to toggle. -->
     <element name = "type" type = "ToggleMove" />
 
-        <simpleType name = "ToggleMove">
+    <simpleType name = "ToggleMove">
         <restriction base = "uint8_t">
-            <enumeration value = "RUN" id = "2" />
-            <enumeration value = "SIT" id = "8" />
-            <enumeration value = "DRIVE" id = "9" />
+            <enumeration value = "RUN" id = "0" />
+            <enumeration value = "SIT" id = "1" />
+            <enumeration value = "DRIVE" id = "2" />
         </restriction>
     </simpleType>
 </packet>
