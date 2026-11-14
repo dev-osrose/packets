@@ -32,5 +32,8 @@
     <element name = "z" type = "int16_t" default = "0" />
     <element name = "subFlag" type = "uint32_t" default = "0" />
     <element name = "name" type = "std::string" ref = "true" default = "none" />
+    <!-- One value for each of max HP up, move speed up and down, attack speed
+         up and down (status bits 4, 6, 7, 8, 9) that is set, in that order. -->
+    <element name = "statusValues" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x3D0" default = "{}" />
     <element name = "otherName" type = "std::string" ref = "true" default = "none" />
 </packet>
