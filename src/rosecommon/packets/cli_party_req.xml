@@ -1,6 +1,7 @@
 <packet ePacketType = "PAKCS_PARTY_REQ">
     <element name = "type" type = "PartyReqType" />
-    <element name = "target" type = "uint16_t" />
+    <!-- An object id, or for BAN a character tag: 32 bits on the wire -->
+    <element name = "target" type = "uint32_t" />
 
     <simpleType name = "PartyReqType">
         <restriction base = "uint8_t">
