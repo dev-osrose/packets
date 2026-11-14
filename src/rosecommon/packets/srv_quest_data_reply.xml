@@ -5,12 +5,12 @@
 
     <simpleType name = "QuestDataResult">
         <restriction base = "uint8_t">
-            <enumeration value = "ADD_SUCCESS" />
-            <enumeration value = "ADD_FAIL" />
-            <enumeration value = "REMOVE_SUCCESS" />
-            <enumeration value = "REMOVE_FAIL" />
-            <enumeration value = "TRIGGER_SUCCESS" />
-            <enumeration value = "TRIGGER_FAIL" />
+            <enumeration value = "ADD_SUCCESS" id = "1" />
+            <enumeration value = "ADD_FAIL" id = "2" />
+            <enumeration value = "REMOVE_SUCCESS" id = "3" />
+            <enumeration value = "REMOVE_FAIL" id = "4" />
+            <enumeration value = "TRIGGER_SUCCESS" id = "5" />
+            <enumeration value = "TRIGGER_FAIL" id = "6" />
         </restriction>
     </simpleType>
 </packet>

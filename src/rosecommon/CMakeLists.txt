@@ -193,6 +193,8 @@ set(IDL_FILES
   packets/srv_quest_data_reply.xml
   packets/srv_quest_data.xml
   packets/srv_quest_reward_add_value.xml
+  packets/srv_quest_reward_item.xml
+  packets/srv_quest_reward_money.xml
   packets/srv_quest_reward_set_value.xml
   packets/srv_remove_object.xml
   packets/srv_revive_reply.xml

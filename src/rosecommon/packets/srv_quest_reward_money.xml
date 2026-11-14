@@ -1,0 +1,4 @@
+<packet ePacketType = "PAKWC_QUEST_REWARD_MONEY">
+  <!-- The character's money after the reward (as PAKWC_SET_MONEY) -->
+  <element name = "zuly" type = "int64_t" />
+</packet>
