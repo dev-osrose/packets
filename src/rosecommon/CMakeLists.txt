@@ -166,6 +166,7 @@ set(IDL_FILES
   packets/srv_global_vars.xml
   packets/srv_gm_command_code.xml
   packets/srv_hp_reply.xml
+  packets/srv_hotbar_set_icon_reply.xml
   packets/srv_inventory_data.xml
   packets/srv_join_server_reply.xml
   packets/srv_levelup.xml
