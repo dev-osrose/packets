@@ -3,6 +3,8 @@
 
     <element name = "reply" type = "BankListReply" />
     <element name = "items" type = "BankListItem" occurs = "unbounded" occursSize="uint8_t" default = "none" />
+    <!-- The money in the bank: the client reads it after INIT_DATA's items. -->
+    <element name = "money" type = "int64_t" default = "0" />
 
     <simpleType name = "BankListReply">
         <restriction base = "uint8_t">
@@ -10,6 +12,7 @@
             <enumeration value = "SHOW_DATA" />
             <enumeration value = "NEED_PASSWORD" />
             <enumeration value = "CHANGED_PASSWORD" />
+            <enumeration value = "INVALID_PASSWORD" />
             <enumeration value = "CLEARED_PASSWORD" />
             <enumeration value = "PLATINUM" />
         </restriction>

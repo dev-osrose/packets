@@ -1,11 +1,13 @@
 <packet ePacketType = "PAKCS_BANK_LIST_REQ">
+    <!-- The client sends the password only when it has one: the body may
+         end after the request. -->
     <element name = "request" type = "BankListRequest" />
     <element name = "password" type = "std::string" ref = "true" />
 
     <simpleType name = "BankListRequest">
         <restriction base = "uint8_t">
             <enumeration value = "OPEN" />
-            <enumeration value = "CHANGE_PASSWORD" id = "17" />
+            <enumeration value = "CHANGE_PASSWORD" id = "1" />
         </restriction>
     </simpleType>
 </packet>
