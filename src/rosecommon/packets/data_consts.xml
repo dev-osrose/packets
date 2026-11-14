@@ -1,0 +1,73 @@
+<definitions name = "data_consts">
+    <documentation>Limits and constants of the game data that the packets and the servers share.</documentation>
+    <constant name = "MIN_SELL_TYPE" type = "uint32_t" value = "1" />
+    <constant name = "MAX_SELL_TYPE" type = "uint32_t" value = "11" />
+
+    <constant name = "MAX_STAT" type = "uint32_t" value = "300" />
+    <constant name = "MAX_STACK" type = "uint32_t" value = "999" />
+
+    <constant name = "MAX_UNION_COUNT" type = "uint32_t" value = "10" />
+    <constant name = "MAX_BUFF_STATUS" type = "uint32_t" value = "40" />
+    <constant name = "MAX_SKILL_COUNT" type = "uint32_t" value = "120" />
+    <constant name = "MAX_HOTBAR_ITEMS" type = "uint32_t" value = "32" />
+
+    <constant name = "MAX_DAMAGE" type = "uint32_t" value = "99999999" />
+    <constant name = "WALK_SPEED" type = "uint32_t" value = "200" />
+    <constant name = "BASE_MOVE_SPEED" type = "uint32_t" value = "425" />
+
+    <constant name = "DAMAGE_ACTION_IMMEDIATE" type = "uint32_t" value = "0x02" />
+    <constant name = "DAMAGE_ACTION_HIT" type = "uint32_t" value = "0x04" />
+    <constant name = "DAMAGE_ACTION_CRITICAL" type = "uint32_t" value = "0x08" />
+    <constant name = "DAMAGE_ACTION_DEAD" type = "uint32_t" value = "0x10" />
+
+    <constant name = "MAX_CONDITIONS_EPISODE" type = "uint32_t" value = "5" />
+    <constant name = "MAX_CONDITIONS_JOB" type = "uint32_t" value = "3" />
+    <constant name = "MAX_CONDITIONS_PLANET" type = "uint32_t" value = "7" />
+    <constant name = "MAX_CONDITIONS_UNION" type = "uint32_t" value = "10" />
+    <constant name = "MAX_QUESTS" type = "uint32_t" value = "10" />
+    <constant name = "MAX_SWITCHES" type = "uint32_t" value = "16" />
+
+    <constant name = "MAX_QUEST_SWITCHES" type = "uint32_t" value = "32" />
+    <constant name = "MAX_QUEST_VARS" type = "uint32_t" value = "10" />
+    <constant name = "MAX_QUEST_ITEMS" type = "uint32_t" value = "6" />
+
+    <constant name = "TAB_SIZE" type = "uint8_t" value = "30" />
+
+    <constant name = "DROP_RANGE" type = "float" value = "50" />
+    <constant name = "MAX_VISIBLE_ITEMS" type = "uint32_t" value = "8" />
+    <constant name = "MAX_INVENTORY" type = "uint32_t" value = "120" />
+    <constant name = "MAX_ITEMS" type = "uint32_t" value = "140">
+        <documentation>MAX_INVENTORY + BulletType::MAX_BULLET_TYPES + RidingItem::MAX_RIDING_ITEMS + EquippedPosition::MAX_EQUIP_ITEMS; checked by a static_assert in dataconsts.h.</documentation>
+    </constant>
+
+    <constant name = "FIRST_BULLET_SLOT" type = "uint8_t" value = "132">
+        <documentation>MAX_INVENTORY + EquippedPosition::MAX_EQUIP_ITEMS; checked by a static_assert in dataconsts.h.</documentation>
+    </constant>
+
+    <constant name = "MAX_STATUS_EFFECTS" type = "uint32_t" value = "40" />
+
+    <constant name = "MAX_WISHLIST" type = "uint32_t" value = "30" />
+
+    <!-- TODO: move these class values to the scripting files -->
+    <constant name = "CLASS_VISITOR" type = "uint32_t" value = "0" />
+    <constant name = "CLASS_SOLDIER_111" type = "uint32_t" value = "111" />
+    <constant name = "CLASS_SOLDIER_121" type = "uint32_t" value = "121" />
+    <constant name = "CLASS_SOLDIER_122" type = "uint32_t" value = "122" />
+    <constant name = "CLASS_SOLDIER_131" type = "uint32_t" value = "131" />
+    <constant name = "CLASS_SOLDIER_132" type = "uint32_t" value = "132" />
+    <constant name = "CLASS_MAGICIAN_211" type = "uint32_t" value = "211" />
+    <constant name = "CLASS_MAGICIAN_221" type = "uint32_t" value = "221" />
+    <constant name = "CLASS_MAGICIAN_222" type = "uint32_t" value = "222" />
+    <constant name = "CLASS_MAGICIAN_231" type = "uint32_t" value = "231" />
+    <constant name = "CLASS_MAGICIAN_232" type = "uint32_t" value = "232" />
+    <constant name = "CLASS_MIXER_311" type = "uint32_t" value = "311" />
+    <constant name = "CLASS_MIXER_321" type = "uint32_t" value = "321" />
+    <constant name = "CLASS_MIXER_322" type = "uint32_t" value = "322" />
+    <constant name = "CLASS_MIXER_331" type = "uint32_t" value = "331" />
+    <constant name = "CLASS_MIXER_332" type = "uint32_t" value = "332" />
+    <constant name = "CLASS_MERCHANT_411" type = "uint32_t" value = "411" />
+    <constant name = "CLASS_MERCHANT_421" type = "uint32_t" value = "421" />
+    <constant name = "CLASS_MERCHANT_422" type = "uint32_t" value = "422" />
+    <constant name = "CLASS_MERCHANT_431" type = "uint32_t" value = "431" />
+    <constant name = "CLASS_MERCHANT_432" type = "uint32_t" value = "432" />
+</definitions>

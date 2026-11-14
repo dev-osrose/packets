@@ -40,6 +40,8 @@ set(IDL_TYPE_FILES
 )
 
 set(IDL_FILES
+  packets/data_consts.xml
+  packets/packet_type.xml
   packets/cli_accept_req.xml
   packets/cli_alive.xml
   packets/cli_allied_chat.xml

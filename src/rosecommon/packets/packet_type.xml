@@ -1,0 +1,324 @@
+<definitions name = "packet_type">
+    <documentation>
+        The type id of every packet: the second 16-bit word of each packet.
+        CS: client to server, SC: server to client, SS: server to server,
+        LC: login server to client, CC: character server to client,
+        WC: world (zone) server to client.
+    </documentation>
+    <simpleType name = "ePacketType" scoped = "true">
+        <restriction base = "uint16_t">
+            <enumeration value = "ISCSTART" id = "0x300" />
+            <enumeration value = "ISC_ALIVE" />
+            <enumeration value = "ISC_SERVER_REGISTER" />
+            <enumeration value = "ISC_TRANSFER">
+                <documentation>transfer to specific map(s)</documentation>
+            </enumeration>
+            <enumeration value = "ISC_TRANSFER_CHAR">
+                <documentation>transfer to specific character(s) (map(s) is/are determined automatically for you)</documentation>
+            </enumeration>
+            <enumeration value = "ISC_CLIENT_STATUS">
+                <documentation>maps send this packet to the char server every time the status of a client changes</documentation>
+            </enumeration>
+            <enumeration value = "ISC_SHUTDOWN" />
+            <enumeration value = "ISCEND" />
+
+            <!-- CLIENT PACKETS START HERE!!! -->
+            <enumeration value = "PAKSTART" id = "0x500" />
+            <enumeration value = "PAKCS_ALIVE" id = "0x500">
+                <documentation>The same as PAKSTART.</documentation>
+            </enumeration>
+            <enumeration value = "PAKSS_ERROR" />
+            <enumeration value = "PAKSS_ANNOUNCE_TEXT" />
+            <enumeration value = "PAKSW_ANNOUNCE_CHAT" />
+            <enumeration value = "PAKCS_ACCEPT_REQ" />
+            <enumeration value = "PAKCS_CHANNEL_LIST_REQ" />
+            <enumeration value = "PAKLC_CHANNEL_LIST_REPLY" />
+
+            <enumeration value = "PAKCS_LOGOUT_REQ" />
+            <enumeration value = "PAKWC_LOGOUT_REPLY" />
+            <enumeration value = "PAKCS_LOGIN_REQ" />
+            <enumeration value = "PAKCS_LOGIN_TOKEN_REQ" />
+            <enumeration value = "PAKLC_LOGIN_REPLY" />
+            <enumeration value = "PAKGC_LOGIN_REPLY" />
+            <enumeration value = "PAKCS_SRV_SELECT_REQ" />
+            <enumeration value = "PAKLC_SRV_SELECT_REPLY" />
+
+            <enumeration value = "PAKCS_JOIN_SERVER_REQ" />
+            <enumeration value = "PAKCS_JOIN_SERVER_TOKEN_REQ" />
+            <enumeration value = "PAKSC_JOIN_SERVER_REPLY" />
+            <enumeration value = "PAKWC_GM_COMMAND" />
+
+            <enumeration value = "PAKWC_GLOBAL_VARS" />
+            <enumeration value = "PAKWC_GLOBAL_FLAGS" />
+
+            <enumeration value = "PAKCC_SWITCH_SERVER" />
+            <enumeration value = "PAKCS_CHAR_LIST_REQ" />
+            <enumeration value = "PAKCC_CHAR_LIST_REPLY" />
+            <enumeration value = "PAKCS_CREATE_CHAR_REQ" />
+            <enumeration value = "PAKCC_CREATE_CHAR_REPLY" />
+            <enumeration value = "PAKCS_DELETE_CHAR_REQ" />
+            <enumeration value = "PAKCC_DELETE_CHAR_REPLY" />
+            <enumeration value = "PAKCS_SELECT_CHAR_REQ" />
+            <enumeration value = "PAKWC_SELECT_CHAR_REPLY" />
+
+            <enumeration value = "PAKWC_INVENTORY_DATA" />
+            <enumeration value = "PAKWC_SET_MONEY_AND_ITEM" />
+            <enumeration value = "PAKWC_SET_ITEM" />
+            <enumeration value = "PAKWC_SERVER_DATA" />
+
+            <enumeration value = "PAKWC_QUEST_DATA" />
+            <enumeration value = "PAKCS_CHANGE_CHAR_REQ" />
+            <enumeration value = "PAKCC_CHAN_CHAR_REPLY" />
+            <enumeration value = "PAKWC_SET_MONEY" />
+            <enumeration value = "PAKWC_QUEST_REWARD_MONEY" />
+            <enumeration value = "PAKWC_QUEST_REWARD_ITEM" />
+            <enumeration value = "PAKWC_QUEST_REWARD_ADD_VALUE" />
+            <enumeration value = "PAKWC_QUEST_REWARD_SET_VALUE" />
+            <enumeration value = "PAKCS_CANCEL_LOGOUT" />
+            <enumeration value = "PAKWC_QUEST_UPDATE" />
+            <enumeration value = "PAKWC_WISH_LIST" />
+
+            <enumeration value = "PAKCS_QUEST_DATA_REQ" />
+            <enumeration value = "PAKWC_QUEST_DATA_REPLY" />
+            <enumeration value = "PAKWC_NPC_EVENT" />
+
+            <enumeration value = "PAKWC_GM_COMMAND_CODE">
+                <documentation>This is for updating client side varibles</documentation>
+            </enumeration>
+            <enumeration value = "PAKCS_CHANGE_MAP_REQ" />
+            <enumeration value = "PAKWC_CHANGE_MAP_REPLY" />
+            <enumeration value = "PAKWC_INIT_DATA" />
+            <enumeration value = "PAKCS_REVIVE_REQ" />
+            <enumeration value = "PAKWC_REVIVE_REPLY" />
+            <enumeration value = "PAKCS_REVIVE_SET_POS" />
+            <enumeration value = "PAKCS_SET_SERVER_VAR_REQ" />
+            <enumeration value = "PAKWC_SET_SERVER_VAR_REPLY" />
+
+            <enumeration value = "PAKCS_CHAR_INFO_REQ" />
+            <enumeration value = "PAKWC_CHAR_INFO_REPLY" />
+            <enumeration value = "PAKCS_SET_WEIGHT_REQ" />
+            <enumeration value = "PAKWC_SET_WEIGHT" />
+
+            <enumeration value = "PAKWC_SET_POSITION" />
+            <enumeration value = "PAKCS_STOP_MOVING">
+                <documentation>Client stopped moving because it can't anymore</documentation>
+            </enumeration>
+            <enumeration value = "PAKWC_STOP_MOVING">
+                <documentation>Handled the same as PAKWC_STOP in the client</documentation>
+            </enumeration>
+
+            <enumeration value = "PAKWC_UPDATE_NPC" />
+            <enumeration value = "PAKCS_SUMMON_CMD" />
+            <enumeration value = "PAKWC_SUMMON_CMD" />
+
+            <enumeration value = "PAKCS_SET_ANIMATION" />
+            <enumeration value = "PACWC_SET_ANIMATION" />
+            <enumeration value = "PAKCS_TOGGLE_MOVE" />
+            <enumeration value = "PAKWC_TOGGLE_MOVE" />
+            <enumeration value = "PAKCS_NORMAL_CHAT" />
+            <enumeration value = "PAKWC_NORMAL_CHAT" />
+            <enumeration value = "PAKCS_WHISPER_CHAT" />
+            <enumeration value = "PAKWC_WHISPER_CHAT" />
+            <enumeration value = "PAKCS_SHOUT_CHAT" />
+            <enumeration value = "PAKWC_SHOUT_CHAT" />
+            <enumeration value = "PAKCS_PARTY_CHAT" />
+            <enumeration value = "PAKWC_PARTY_CHAT" />
+            <enumeration value = "PAKCS_CLAN_CHAT" />
+            <enumeration value = "PAKWC_CLAN_CHAT" />
+            <enumeration value = "PAKCS_ALLIED_CHAT" />
+            <enumeration value = "PAKWC_ALLIED_CHAT" />
+            <enumeration value = "PAKCS_ALLIED_SHOUT_CHAT" />
+            <enumeration value = "PAKWC_ALLIED_SHOUT_CHAT" />
+
+            <enumeration value = "PAKWC_EVENT_STATUS" />
+            <enumeration value = "PAKWC_NPC_CHAR" />
+            <enumeration value = "PAKWC_MOB_CHAR" />
+            <enumeration value = "PAKWC_PLAYER_CHAR" />
+            <enumeration value = "PAKWC_REMOVE_OBJECT" />
+            <enumeration value = "PAKCS_SET_POSITION" />
+            <enumeration value = "PAKCS_STOP">
+                <documentation>client wants to stop</documentation>
+            </enumeration>
+            <enumeration value = "PAKWC_STOP">
+                <documentation>object stops at position x</documentation>
+            </enumeration>
+            <enumeration value = "PAKWC_MOVE">
+                <documentation>mouse cmd with move mode in it??</documentation>
+            </enumeration>
+
+            <enumeration value = "PAKCS_ATTACK" />
+            <enumeration value = "PAKWC_ATTACK" />
+
+            <enumeration value = "PAKCS_DAMAGE" />
+            <enumeration value = "PAKWC_DAMAGE" />
+
+            <enumeration value = "PAKCS_MOUSE_CMD">
+                <documentation>client wants to move or click on an object</documentation>
+            </enumeration>
+            <enumeration value = "PAKWC_MOUSE_CMD">
+                <documentation>answer from the server</documentation>
+            </enumeration>
+
+            <enumeration value = "PAKWC_SET_EXP" />
+            <enumeration value = "PAKWC_LEVELUP" />
+
+            <enumeration value = "PAKCS_HP_REQ" />
+            <enumeration value = "PAKWC_HP_REPLY" />
+
+            <enumeration value = "PAKWC_SET_HP_AND_MP" />
+
+            <enumeration value = "PAKCS_STORE_TRADE_REQ" />
+            <enumeration value = "PAKWC_STORE_TRADE_REPLY" />
+
+            <enumeration value = "PAKCS_USE_ITEM" />
+            <enumeration value = "PAKWC_USE_ITEM" />
+
+            <enumeration value = "PAKCS_DROP_ITEM" />
+
+            <enumeration value = "PAKCS_EQUIP_ITEM" />
+            <enumeration value = "PAKWC_EQUIP_ITEM" />
+
+            <enumeration value = "PAKWC_DROP_ITEM" />
+
+            <enumeration value = "PAKCS_PICKUP_ITEM_REQ">
+                <documentation>FIELD_ITEM_REQ in client</documentation>
+            </enumeration>
+            <enumeration value = "PAKWC_PICKUP_ITEM_REPLY">
+                <documentation>FIELD_ITEM_REPLY in client</documentation>
+            </enumeration>
+
+            <enumeration value = "PAKCS_TELEPORT_REQ" />
+            <enumeration value = "PAKWC_TELEPORT_REPLY" />
+
+            <enumeration value = "PAKCS_STAT_ADD_REQ" />
+            <enumeration value = "PAKWC_STAT_ADD_REPLY" />
+
+            <enumeration value = "PAKCS_HOTBAR_SET_ICON_REQ" />
+            <enumeration value = "PAKWC_HOTBAR_SET_ICON_REPLY" />
+
+            <enumeration value = "PAKCS_EQUIP_PROJECTILE" />
+            <enumeration value = "PAKWC_EQUIP_PROJECTILE" />
+
+            <enumeration value = "PAKWC_CHANGE_SKIN" />
+
+            <enumeration value = "PAKCS_BANK_LIST_REQ" />
+            <enumeration value = "PAKWC_BANK_LIST_REPLY" />
+            <enumeration value = "PAKCS_BANK_MOVE_ITEM" />
+            <enumeration value = "PAKWC_BANK_MOVE_ITEM" />
+
+            <enumeration value = "PAKCS_CRAFT_REQ" />
+            <enumeration value = "PAKWC_CRAFT_REPLY" />
+
+            <enumeration value = "PAKWC_SKILL_LEARN" />
+            <enumeration value = "PAKCS_SKILL_LEVEL_REQ" />
+            <enumeration value = "PAKWC_SKILL_LEVEL_REPLY" />
+            <enumeration value = "PAKCS_SKILL_CAST_SELF" />
+            <enumeration value = "PAKWC_SKILL_CAST_SELF" />
+            <enumeration value = "PAKCS_SKILL_CAST_TARGET" />
+            <enumeration value = "PAKWC_SKILL_CAST_TARGET" />
+            <enumeration value = "PAKCS_SKILL_CAST_POSITION" />
+            <enumeration value = "PAKWC_SKILL_CAST_POSITION" />
+            <enumeration value = "PAKWC_SKILL_EFFECT" />
+            <enumeration value = "PAKWC_SKILL_DAMAGE" />
+
+            <enumeration value = "PAKWC_CLEAR_STATUS" />
+            <enumeration value = "PAKWC_SPEED_CHANGED" />
+
+            <enumeration value = "PAKWC_SKILL_FINISH" />
+
+            <enumeration value = "PAKCS_APPRAISAL_REQ" />
+            <enumeration value = "PAKWC_APPRAISAL_REPLY" />
+
+            <enumeration value = "PAKWC_SKILL_START" />
+
+            <enumeration value = "PAKCS_CRAFT_ENHANCE_REQ" />
+            <enumeration value = "PAKWC_CRAFT_ENHANCE_REPLY" />
+
+            <enumeration value = "PAKWC_SKILL_CANCEL" />
+
+            <enumeration value = "PAKCS_WISHLIST_ADD" />
+
+            <enumeration value = "PAKCS_TRADE" />
+            <enumeration value = "PAKWC_TRADE" />
+            <enumeration value = "PAKCS_TRADE_ITEM" />
+            <enumeration value = "PAKWC_TRADE_ITEM" />
+
+            <enumeration value = "PAKCS_SHOP_OPEN" />
+            <enumeration value = "PAKWC_SHOP_OPEN" />
+            <enumeration value = "PAKCS_SHOP_CLOSE" />
+            <enumeration value = "PAKWC_SHOP_CLOSE" />
+            <enumeration value = "PAKCS_SHOP_LIST_REQ" />
+            <enumeration value = "PAKWC_SHOP_LIST_REPLY" />
+            <enumeration value = "PAKCS_SHOP_BUY_REQ" />
+            <enumeration value = "PAKCS_SHOP_SELL_REQ" />
+            <enumeration value = "PAKCS_SHOP_BUYSELL_REPLY" />
+
+            <enumeration value = "PAKCS_EQUIP_ITEM_RIDE" />
+            <enumeration value = "PAKWC_EQUIP_ITEM_RIDE" />
+            <enumeration value = "PAKCS_REPAIR_USE_ITEM" />
+            <enumeration value = "PAKCS_REPAIR_NPC" />
+            <enumeration value = "PAKWC_SET_ITEM_LIFE" />
+
+            <enumeration value = "PAKCS_PARTY_REQ" />
+            <enumeration value = "PAKWC_PARTY_REQ" />
+            <enumeration value = "PAKCS_PARTY_REPLY" />
+            <enumeration value = "PAKWC_PARTY_REPLY" />
+            <enumeration value = "PAKWC_PARTY_MEMBER" />
+            <enumeration value = "PAKWC_PARTY_ITEM" />
+            <enumeration value = "PAKWC_PARTY_LEVELEXP" />
+            <enumeration value = "PAKWC_PARTY_MEMBER_UPDATE" />
+
+            <enumeration value = "PAKWC_EVENT_ADD" />
+
+            <enumeration value = "PAKCS_PARTY_RULE" />
+            <enumeration value = "PAKWC_PARTY_RULE" />
+
+            <enumeration value = "PAKCS_CRAFT_STATUS" />
+            <enumeration value = "PAKWC_CRAFT_STATUS" />
+
+            <enumeration value = "PAKCS_BANK_MOVE_MONEY" />
+            <enumeration value = "PAKWC_BANK_MOVE_MONEY" />
+
+            <enumeration value = "PAKWC_NPC_SHOW" />
+            <enumeration value = "PAKWC_FAIRY" />
+
+            <enumeration value = "PAKCS_RIDE_REQUEST" />
+            <enumeration value = "PAKWC_RIDE_REQUEST" />
+
+            <enumeration value = "PAKWC_BILLING_MESSAGE" />
+            <enumeration value = "PAKWC_BILLING_MESSAGE_EXT" />
+
+            <enumeration value = "PAKCS_CLAN_COMMAND" />
+            <enumeration value = "PAKCC_CLAN_COMMAND" />
+
+            <enumeration value = "PAKCS_MESSENGER" />
+            <enumeration value = "PAKCC_MESSENGER" />
+            <enumeration value = "PAKCS_MESSENGER_CHAT" />
+            <enumeration value = "PAKCC_MESSENGER_CHAT" />
+            <enumeration value = "PAKCS_CHATROOM" />
+            <enumeration value = "PAKCC_CHATROOM" />
+            <enumeration value = "PAKCS_CHATROOM_MESSAGE" />
+            <enumeration value = "PAKCC_CHATROOM_MESSAGE" />
+            <enumeration value = "PAKCS_MEMO" />
+            <enumeration value = "PAKCC_MEMO" />
+
+            <enumeration value = "PAKCS_CLAN_ICON_SET" />
+            <enumeration value = "PAKCS_CLAN_ICON_REQ" />
+            <enumeration value = "PAKCC_CLAN_ICON_REPLY" />
+            <enumeration value = "PAKCS_CLAN_ICON_TIMESTAMP" />
+            <enumeration value = "PAKCC_CLAN_ICON_TIMESTAMP" />
+
+            <enumeration value = "PAKWC_RIDE_STATE_CHANGE" />
+            <enumeration value = "PAWKC_CHAR_STATE_CHANGE" />
+
+            <enumeration value = "PAKCS_SCREEN_SHOT_TIME_REQ" />
+            <enumeration value = "PAKSC_SCREEN_SHOT_TIME_REPLY" />
+            <enumeration value = "PAKWC_UPDATE_NAME" />
+
+            <enumeration value = "PAKSS_ACCEPT_REPLY" />
+            <enumeration value = "EPACKETMAX" />
+
+            <enumeration value = "STRESS" id = "0x6F6D" />
+        </restriction>
+    </simpleType>
+</definitions>
