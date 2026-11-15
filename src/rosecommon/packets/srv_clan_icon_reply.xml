@@ -1,21 +1,14 @@
 <packet ePacketType = "PAKCC_CLAN_ICON_REPLY">
-    <!-- if the id is 0, read the error -->
-    <element name = "id" type = "uint16_t" />
-    <element name = "data" type = "uint8_t" occurs="unbounded" />
-    
-    <complexType name = "DataOrError">
-        <choice>
-            <sequence inline = "true">
-                <element name = "crc" type = "uint16_t" />
-                <element name = "icon" type = "uint8_t" occurs = "unbounded" />
-            </sequence>
-            <element name = "error" type = "IconError" />
-        </choice>
-    </complexType>
-    
+    <documentation>A clan's mark (`wsv_CLANMARK_REPLY`). With `id` 0 it is a
+        refusal and `crc` holds the IconError; otherwise `crc` is the mark's
+        CRC16 and `data` the mark, gzipped, as its master sent it.</documentation>
+    <element name = "id" type = "uint32_t" />
+    <element name = "crc" type = "uint16_t" />
+    <element name = "data" type = "uint8_t" occurs = "unbounded" />
+
     <simpleType name = "IconError">
         <restriction base = "uint16_t">
-            <enumeration value = "TOO_MANY_UPDATES" />
+            <enumeration value = "TOO_MANY_UPDATES" id = "1" />
             <enumeration value = "DB_ERROR" />
             <enumeration value = "SP_ERROR" />
         </restriction>
