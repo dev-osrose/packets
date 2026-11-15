@@ -1,11 +1,12 @@
 <packet ePacketType = "PAKCS_RIDE_REQUEST">
     <element name = "action" type = "RideAction" />
     <element name = "owner" type = "uint16_t" />
-    <element name = "guest" type = "uint32_t" />
+    <element name = "guest" type = "uint16_t" />
 
     <simpleType name = "RideAction">
         <restriction base = "uint8_t">
-            <enumeration value = "REQUEST" />
+            <!-- The client's CART_RIDE_*, from 1. -->
+            <enumeration value = "REQUEST" id = "1" />
             <enumeration value = "ACCEPT" />
             <enumeration value = "REFUSE" />
             <enumeration value = "OWNER_NOT_FOUND" />
