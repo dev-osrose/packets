@@ -1,11 +1,34 @@
 <packet ePacketType = "PAKCS_CRAFT_ENHANCE_REQ">
+	<documentation>Gems, disassembly and refining (the client's
+		cli_CRAFT_*_REQ): what follows the type depends on it.</documentation>
 	<element name = "enhancement" type = "CraftEnhancementType" />
-	<!-- What follows depends on the type (the client's cli_CRAFT_*_REQ):
-	     GEM: the equipment's slot, the gem's slot (two uint8);
-	     DISASSEMBLE_*: the skill slot or NPC (int16), the item's slot (uint8);
-	     UPGRADE_*: the skill slot or NPC (int16), the item's slot (uint8),
-	     then three material slots (uint8). -->
-	<element name = "payload" type = "uint8_t" occurs = "unbounded" default = "{}" />
+	<choice selector = "enhancement">
+		<!-- The worn piece's slot, then the gem's. -->
+		<sequence case = "GEM">
+			<element name = "gem_target" type = "uint8_t" />
+			<element name = "gem_source" type = "uint8_t" />
+		</sequence>
+		<!-- The skill slot or the NPC, then the item's slot. -->
+		<sequence case = "DISASSEMBLE_SKILL">
+			<element name = "by" type = "int16_t" />
+			<element name = "target" type = "uint8_t" />
+		</sequence>
+		<sequence case = "DISASSEMBLE_NPC">
+			<element name = "by" type = "int16_t" />
+			<element name = "target" type = "uint8_t" />
+		</sequence>
+		<!-- The same, then the three materials' slots. -->
+		<sequence case = "UPGRADE_SKILL">
+			<element name = "by" type = "int16_t" />
+			<element name = "target" type = "uint8_t" />
+			<element name = "materials" type = "uint8_t" occurs = "3" />
+		</sequence>
+		<sequence case = "UPGRADE_NPC">
+			<element name = "by" type = "int16_t" />
+			<element name = "target" type = "uint8_t" />
+			<element name = "materials" type = "uint8_t" occurs = "3" />
+		</sequence>
+	</choice>
 
 	<simpleType name = "CraftEnhancementType">
 		<restriction base = "uint8_t">
@@ -16,5 +39,4 @@
 			<enumeration value = "UPGRADE_NPC" />
 		</restriction>
 	</simpleType>
-
 </packet>
