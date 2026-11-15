@@ -1,4 +1,8 @@
 <packet ePacketType = "PAKWC_BILLING_MESSAGE">
-    <element name = "functionType" type = "uint16_t" default = "0x1001" />
-    <element name = "payFlag" type = "uint32_t" default = "2" />
+    <!-- As the client reads it (gsv_BILLING_MESSAGE2): the message type
+         (BILLING_MSG_*) always, the other two only for
+         BILLING_MSG_JPN_NEED_CHARGE. Type 1 is BILLING_MSG_PAY_FU. -->
+    <element name = "messageType" type = "uint8_t" default = "1" />
+    <element name = "functionType" type = "int8_t" default = "0" />
+    <element name = "payFlag" type = "uint32_t" default = "0" />
 </packet>

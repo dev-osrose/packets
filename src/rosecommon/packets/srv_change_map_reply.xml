@@ -1,16 +1,18 @@
 <packet ePacketType = "PAKWC_CHANGE_MAP_REPLY">
+    <!-- As the client reads it (gsv_JOIN_ZONE): exp as in PAKWC_SET_EXP,
+         the economy block as in PAKWC_GLOBAL_VARS. -->
     <element name = "objectIndex" type = "uint16_t" />
     <element name = "hp" type = "uint16_t" />
     <element name = "mp" type = "uint16_t" />
-    <element name = "xp" type = "uint16_t" />
-    <element name = "penalizeXp" type = "uint16_t" />
-    <element name = "craftRate" type = "uint16_t" default = "0" />
-    <element name = "updateTime" type = "uint16_t" default = "0" />
-    <element name = "worldRate" type = "uint16_t" default = "0" />
+    <element name = "xp" type = "int64_t" />
+    <element name = "penalizeXp" type = "int64_t" />
+    <element name = "craftRate" type = "int16_t" default = "0" />
+    <element name = "updateTime" type = "int32_t" default = "0" />
+    <element name = "worldRate" type = "int16_t" default = "0" />
     <element name = "townRate" type = "uint8_t" default = "0" />
     <include path = "dataconsts.h" />
     <element name = "itemRate" type = "uint8_t" occurs = "MAX_SELL_TYPE" default = "{0}" />
     <element name = "flags" type = "uint32_t" default = "0" />
-    <element name = "worldTime" type = "uint16_t" />
-    <element name = "teamNumber" type = "uint16_t" />
+    <element name = "worldTime" type = "uint32_t" />
+    <element name = "teamNumber" type = "int32_t" />
 </packet>
