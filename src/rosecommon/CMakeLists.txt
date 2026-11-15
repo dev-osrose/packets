@@ -29,6 +29,7 @@ set(IDL_TYPE_FILES
   packets/equipped_item.xml
   packets/equipped_position.xml
   packets/equipped_position_ride.xml
+  packets/clan.xml
   packets/hotbar_icon.xml
   packets/hotbar_item.xml
   packets/item.xml

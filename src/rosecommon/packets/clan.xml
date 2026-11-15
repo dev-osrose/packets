@@ -1,0 +1,30 @@
+<complexType name = "ClanId">
+    <documentation>`tag_CLAN_ID`: what others see of a member's clan.</documentation>
+    <sequence>
+        <element name = "id" type = "uint32_t" />
+        <element name = "mark_back" type = "uint16_t" />
+        <element name = "mark_center" type = "uint16_t" />
+        <element name = "level" type = "uint8_t" />
+        <element name = "rank" type = "ClanRank" />
+    </sequence>
+</complexType>
+
+<complexType name = "ClanTag">
+    <documentation>A member's clan as `PAKWC_PLAYER_CHAR` ends with it.</documentation>
+    <sequence>
+        <element name = "clan" type = "ClanId" />
+        <element name = "name" type = "std::string" />
+    </sequence>
+</complexType>
+
+<simpleType name = "ClanRank">
+    <restriction base = "uint8_t">
+        <enumeration value = "PENALTY" id = "0" />
+        <enumeration value = "JUNIOR" />
+        <enumeration value = "SENIOR" />
+        <enumeration value = "VETERAN" />
+        <enumeration value = "COMMANDER" />
+        <enumeration value = "SUB_MASTER" />
+        <enumeration value = "MASTER" />
+    </restriction>
+</simpleType>

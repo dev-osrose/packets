@@ -1,13 +1,105 @@
 <packet ePacketType = "PAKCC_CLAN_COMMAND">
-    <!-- TODO: Pending IDL union enhancements 7/16/2019 
+    <documentation>What a client is told of its clan (`wsv_CLAN_COMMAND` and its
+        `RESULT_CLAN_*`): a result, then what that result carries, as the
+        client reads it (`Recv_wsv_CLAN_COMMAND`).</documentation>
     <include path = "string" system = "true" />
+    <includeXml path = "clan.xml" />
 
-    <element name = "result" type = "ClanCommandResult" />
-    <element name = "data" type = "ClanCommandData" />
+    <element name = "result" type = "ClanResult" />
+    <choice selector = "result">
+        <sequence case = "INVITED">
+            <element name = "inviter" type = "std::string" />
+        </sequence>
+        <sequence case = "REFUSED">
+            <element name = "refuser" type = "std::string" />
+        </sequence>
+        <sequence case = "CREATED">
+            <element name = "clan" type = "MyClan" />
+            <element name = "name" type = "std::string" />
+            <element name = "slogan" type = "std::string" />
+            <element name = "motd" type = "std::string" />
+        </sequence>
+        <sequence case = "JOINED">
+            <element name = "clan" type = "MyClan" />
+            <element name = "name" type = "std::string" />
+            <element name = "slogan" type = "std::string" />
+            <element name = "motd" type = "std::string" />
+        </sequence>
+        <sequence case = "DESTROYED_MSG" />
+        <sequence case = "DATA">
+            <element name = "clan" type = "MyClan" />
+            <element name = "name" type = "std::string" />
+            <element name = "slogan" type = "std::string" />
+            <element name = "motd" type = "std::string" />
+        </sequence>
+        <sequence case = "MOTD">
+            <element name = "text" type = "std::string" />
+        </sequence>
+        <sequence case = "SET">
+            <element name = "object_id" type = "uint16_t" />
+            <element name = "clan_id" type = "ClanId" />
+            <element name = "name" type = "std::string" />
+        </sequence>
+        <sequence case = "SLOGAN">
+            <element name = "text" type = "std::string" />
+        </sequence>
+        <sequence case = "CREATE_FAILED" />
+        <sequence case = "DUPLICATE_NAME" />
+        <sequence case = "NO_PERMISSION" />
+        <sequence case = "MISSING_CONDITION" />
+        <sequence case = "DESTROYED" />
+        <sequence case = "DESTROY_FAILED" />
+        <sequence case = "DESTROY_NO_PERMISSION" />
+        <sequence case = "JOIN_MEMBER">
+            <element name = "member" type = "std::string" />
+            <element name = "inviter" type = "std::string" />
+        </sequence>
+        <sequence case = "JOIN_FAILED">
+            <element name = "name" type = "std::string" />
+        </sequence>
+        <sequence case = "JOIN_NO_PERMISSION" />
+        <sequence case = "JOIN_HAS_CLAN">
+            <element name = "name" type = "std::string" />
+        </sequence>
+        <sequence case = "JOIN_FULL" />
+        <sequence case = "INFO">
+            <element name = "clan" type = "MyClan" />
+        </sequence>
+        <sequence case = "ROSTER">
+            <element name = "members" type = "ClanMember" occurs = "unbounded" />
+        </sequence>
+        <sequence case = "MEMBER_LOGIN">
+            <element name = "row" type = "ClanMember" />
+        </sequence>
+        <sequence case = "MEMBER_LOGOUT">
+            <element name = "row" type = "ClanMember" />
+        </sequence>
+        <sequence case = "MEMBER_POSITION">
+            <element name = "row" type = "ClanMember" />
+        </sequence>
+        <sequence case = "KICK">
+            <element name = "member" type = "std::string" />
+            <element name = "kicker" type = "std::string" />
+        </sequence>
+        <sequence case = "QUIT">
+            <element name = "member" type = "std::string" />
+        </sequence>
+        <sequence case = "POSITION">
+            <element name = "by" type = "std::string" />
+            <element name = "rank" type = "ClanRank" />
+        </sequence>
+        <sequence case = "MEMBER_JOB_LEVEL">
+            <element name = "level" type = "int16_t" />
+            <element name = "job" type = "int16_t" />
+            <element name = "name" type = "std::string" />
+        </sequence>
+    </choice>
 
-    <simpleType name = "ClanCommandResult">
+    <simpleType name = "ClanResult">
         <restriction base = "uint8_t">
-            <enumeration value = "CREATED" id = "0x31" />
+            <enumeration value = "INVITED" id = "0x0B" />
+            <enumeration value = "REFUSED" id = "0x0D" />
+            <enumeration value = "CREATED" id = "0x30" />
             <enumeration value = "JOINED" />
             <enumeration value = "DESTROYED_MSG" />
             <enumeration value = "DATA" />
@@ -38,85 +130,36 @@
         </restriction>
     </simpleType>
 
-    <complexType name = "ClanCommandData">
-        <choice>
-            <element name = "clan_data" type = "ClanData" ref = "true" />
-            <sequence inline = "true">
-                <element name = "member_level" type = "int16_t" />
-                <element name = "member_job" type = "int16_t" />
-                <element name = "member_name" type = "std::string" ref = "true" />
-            </sequence>
-            <sequence inline = "true">
-                <element name = "target_member" type = "std::string" ref = "true" />
-                <element name = "source_member" type = "std::string"  ref = "true" />
-            </sequence>
-            <element name = "roster" type = "ClanMember" occurs="unbounded" />
-            <element name = "name" type = "std::string" ref = "true" />
-            <element name = "motd" type = "std::string" ref = "true" />
-            <element name = "slogan" type = "std::string" ref = "true" />
-            <sequence inline = "true">
-                <element name = "rank_master" type = "std::string" ref = "true" />
-                <element name = "rank_rank" type = "ClanRank" />
-            </sequence>
-            <sequence inline = "true">
-                <element name = "set_id" type = "uint16_t" />
-                <element name = "set_clan_id" type = "uint32_t" />
-                <element name = "set_icon_back" type = "uint16_t" />
-                <element name = "set_icon_center" type = "uint16_t" />
-                <element name = "set_level" type = "uint8_t" />
-                <element name = "set_rank" type = "ClanRank" />
-            </sequence>
-            <element name = "member" type = "ClanMember" />
-        </choice>
-    </complexType>
-
-    <complexType name = "ClanData">
+    <complexType name = "MyClan">
+        <documentation>`tag_MY_CLAN`, 152 bytes.</documentation>
         <sequence>
-            <element name = "id" type = "uint32_t" />
-            <element name = "icon_back" type = "uint16_t" />
-            <element name = "icon_center" type = "uint16_t" />
-            <element name = "level" type = "uint8_t" />
-            <element name = "rank" type = "uint8_t" />
+            <element name = "id" type = "ClanId" />
             <element name = "score" type = "int32_t" />
             <element name = "rate" type = "int32_t" />
             <element name = "money" type = "int64_t" />
             <element name = "member_count" type = "int16_t" />
-            <element name = "points" type = "int32_t" />
-            <element name = "skills" type = "ClanSkill" occurs="20 />
-            <element name = "name" type = "std::string" ref = "true" />
-            <element name = "slogan" type = "std::string" ref = "true" />
-            <element name = "motd" type = "std:string" ref = "true" />
+            <element name = "contribution" type = "int32_t" />
+            <element name = "skills" type = "ClanSkill" occurs = "20" />
         </sequence>
     </complexType>
 
     <complexType name = "ClanSkill">
         <sequence>
             <element name = "id" type = "int16_t" />
-            <element name = "expiration" type = "uint32_t" />
+            <element name = "expires" type = "uint32_t" />
         </sequence>
     </complexType>
 
     <complexType name = "ClanMember">
+        <documentation>`tag_CLAN_MEMBER` and the name.</documentation>
         <sequence>
-            <element name = "rank" type = "uint8_t" />
+            <element name = "rank" type = "ClanRank" />
             <element name = "channel" type = "uint8_t" />
-            <element name = "contribtuion" type = "int32_t" />
+            <element name = "contribution" type = "int32_t" />
             <element name = "level" type = "int16_t" />
             <element name = "job" type = "int16_t" />
-            <element name = "name" type = "std::string" ref = "true" />
+            <element name = "name" type = "std::string" />
         </sequence>
     </complexType>
 
-    <simpleType name = "ClanRank">
-        <restricton base = "uint8_t">
-            <enumeration value = "PENALTY" />
-            <enumeration value = "JUNIOR" />
-            <enumeration value = "SENIOR" />
-            <enumeration value = "LEADER" />
-            <enumeration value = "COMMANDER" />
-            <enumeration value = "SUBMASTER" />
-            <enumeration value = "MASTER" />
-        </restriction>
-    </simpleType>
-    -->
 </packet>
