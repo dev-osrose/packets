@@ -1,0 +1,61 @@
+name: Build and test
+
+on: [push, pull_request]
+
+jobs:
+  # The TLS build is the one that runs the tests: with ENABLE_SSL=OFF the whole
+  # implementation is preprocessed out and both suites report as skipped.
+  tls:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_TYPE: Debug
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install OpenSSL headers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev
+
+      - name: Configure
+        run: >
+          cmake -B ${{github.workspace}}/build -G Ninja
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          -DENABLE_SSL=ON
+          -DOSIROSE_COMMON_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config $BUILD_TYPE
+
+      # A green ctest against an empty test list is not evidence. osIROSE-new
+      # spent years in exactly that state, so the count is asserted rather than
+      # assumed.
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: |
+          ctest -C $BUILD_TYPE -N | tail -1
+          test "$(ctest -C $BUILD_TYPE -N | sed -n 's/^Total Tests: //p')" -gt 0
+          ctest -C $BUILD_TYPE --output-on-failure
+
+  # Keeps the plaintext branch compiling. It is a separate set of #ifdefs, and
+  # nothing else in CI would notice it rotting.
+  plaintext:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_TYPE: Debug
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure
+        run: >
+          cmake -B ${{github.workspace}}/build -G Ninja
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          -DENABLE_SSL=OFF
+          -DOSIROSE_COMMON_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config $BUILD_TYPE
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C $BUILD_TYPE --output-on-failure

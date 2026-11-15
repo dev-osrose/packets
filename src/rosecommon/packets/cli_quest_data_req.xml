@@ -5,9 +5,9 @@
 
     <simpleType name = "QuestDataRequestType">
         <restriction base = "uint8_t">
-            <enumeration value = "ADD" />
-            <enumeration value = "REMOVE" />
-            <enumeration value = "TRIGGER" />
+            <enumeration value = "ADD" id = "1" />
+            <enumeration value = "REMOVE" id = "2" />
+            <enumeration value = "TRIGGER" id = "3" />
         </restriction>
     </simpleType>
 </packet>

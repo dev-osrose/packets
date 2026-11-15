@@ -1,5 +1,6 @@
 <packet ePacketType = "PAKCS_USE_ITEM">
     <element name = "index" type = "uint16_t" />
-    <!-- Seems to be only set if the item is a special kind of skill casting item "ITEM_SKILL" -->
-    <element name = "item_id" type = "uint16_t" />
+    <!-- The target's object id, sent only for a scroll that casts a target
+         skill (the client's Send_cli_USE_ITEM appends it); none otherwise. -->
+    <element name = "target" type = "uint16_t" occurs = "unbounded" default = "{}" />
 </packet>

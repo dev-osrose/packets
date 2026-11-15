@@ -8,9 +8,10 @@
 
     <simpleType name = "ShopBuySellResult">
         <restriction base = "uint8_t">
-            <enumeration value = "NULL" />
+            <!-- The client's RESULT_P_STORE_*, from 1. -->
+            <enumeration value = "CANCELLED" id = "1" />
             <enumeration value = "SOLD_OUT" />
-            <enumeration value = "OVER_SOLD" />
+            <enumeration value = "NO_MORE_NEED" />
             <enumeration value = "BUY_PARTIAL" />
             <enumeration value = "BUY_ALL" />
             <enumeration value = "SELL_PARTIAL" />

@@ -25,12 +25,23 @@ SET(SOURCES_BASE
 )
 
 set(IDL_TYPE_FILES
+  packets/bullet_type.xml
   packets/equipped_item.xml
   packets/equipped_position.xml
+  packets/equipped_position_ride.xml
+  packets/hotbar_icon.xml
+  packets/hotbar_item.xml
   packets/item.xml
+  packets/mob_animation.xml
+  packets/party_member.xml
+  packets/party_rule.xml
+  packets/riding_item.xml
+  packets/skill.xml
 )
 
 set(IDL_FILES
+  packets/data_consts.xml
+  packets/packet_type.xml
   packets/cli_accept_req.xml
   packets/cli_alive.xml
   packets/cli_allied_chat.xml
@@ -64,7 +75,9 @@ set(IDL_FILES
   packets/cli_hotbar_set_icon_req.xml
   packets/cli_hp_req.xml
   packets/cli_join_server_req.xml
+  packets/cli_join_server_token_req.xml
   packets/cli_login_req.xml
+  packets/cli_login_token_req.xml
   packets/cli_logout_req.xml
   packets/cli_memo.xml
   packets/cli_messenger_chat.xml
@@ -89,9 +102,11 @@ set(IDL_FILES
   packets/cli_set_position.xml
   packets/cli_set_server_var_req.xml
   packets/cli_set_weight_req.xml
+  packets/cli_shop_buy_req.xml
   packets/cli_shop_close.xml
   packets/cli_shop_list_req.xml
   packets/cli_shop_open.xml
+  packets/cli_shop_sell_req.xml
   packets/cli_shout_chat.xml
   packets/cli_skill_cast_position.xml
   packets/cli_skill_cast_self.xml
@@ -107,6 +122,7 @@ set(IDL_FILES
   packets/cli_trade.xml
   packets/cli_use_item.xml
   packets/cli_whisper_chat.xml
+  packets/cli_wishlist_add.xml
   packets/isc_client_status.xml
   packets/isc_alive.xml
   packets/isc_server_register.xml
@@ -153,6 +169,7 @@ set(IDL_FILES
   packets/srv_global_vars.xml
   packets/srv_gm_command_code.xml
   packets/srv_hp_reply.xml
+  packets/srv_hotbar_set_icon_reply.xml
   packets/srv_inventory_data.xml
   packets/srv_join_server_reply.xml
   packets/srv_levelup.xml
@@ -180,6 +197,8 @@ set(IDL_FILES
   packets/srv_quest_data_reply.xml
   packets/srv_quest_data.xml
   packets/srv_quest_reward_add_value.xml
+  packets/srv_quest_reward_item.xml
+  packets/srv_quest_reward_money.xml
   packets/srv_quest_reward_set_value.xml
   packets/srv_remove_object.xml
   packets/srv_revive_reply.xml
@@ -198,6 +217,7 @@ set(IDL_FILES
   packets/srv_set_position.xml
   packets/srv_set_server_var_reply.xml
   packets/srv_set_weight.xml
+  packets/cli_shop_buysell_reply.xml
   packets/srv_shop_close.xml
   packets/srv_shop_list_reply.xml
   packets/srv_shop_open.xml
@@ -228,20 +248,17 @@ set(IDL_FILES
   packets/srv_whisper_chat.xml
 )
 
-set(args
-  TARGET RosePackets
-  IDLFILES ${IDL_FILES}
+add_library(${PROJECT} STATIC ${SOURCES_BASE} ${SOURCES_HEADER})
+
+target_generate_packets(${PROJECT}
   IDLROOT ${CMAKE_CURRENT_SOURCE_DIR}/packets
-  SRC_OUTPATH ${CMAKE_GEN_SRC_DIR}/packets
-  HDR_OUTPATH ${CMAKE_GEN_SRC_DIR}/packets
+  OUTDIR  ${CMAKE_GEN_SRC_DIR}/packets
+  IDLFILES ${IDL_FILES}
 )
 
-generate_packets(PACKET_SOURCES PACKET_HEADERS ${args})
-
-add_library(${PROJECT} STATIC ${SOURCES_BASE} ${PACKET_SOURCES} ${PACKET_HEADERS} ${SOURCES_HEADER})
 target_include_directories(${PROJECT}
   PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_GEN_SRC_DIR}/packets>
+    $<BUILD_INTERFACE:${CMAKE_GEN_SRC_DIR}/packets/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
@@ -250,7 +267,6 @@ if (NOT MSVC)
 endif()
 
 add_dependencies(${PROJECT} osIROSE-common-core)
-add_dependencies(${PROJECT} RosePackets_generated)
 target_link_libraries(${PROJECT}
   PUBLIC
   osIROSE-common-core
@@ -258,14 +274,11 @@ target_link_libraries(${PROJECT}
 
 list(TRANSFORM SOURCES_HEADER PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 
-set(HEADERS "${SOURCES_HEADER};${PACKET_HEADERS}")
-
 set_target_properties(${PROJECT} PROPERTIES
-    PUBLIC_HEADER "${HEADERS}")
+  PUBLIC_HEADER "${SOURCES_HEADER}"
+)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src PREFIX "Source Files" FILES ${SOURCES_BASE})
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include PREFIX "Header Files" FILES ${SOURCES_HEADER})
-source_group(TREE ${CMAKE_GEN_SRC_DIR}/packets PREFIX "Packet Source Files" FILES ${PACKET_SOURCES})
-source_group(TREE ${CMAKE_GEN_SRC_DIR}/packets PREFIX "Packet Header Files" FILES ${PACKET_HEADERS})
 
 SET_PROPERTY(TARGET ${PROJECT}                PROPERTY FOLDER "Common")

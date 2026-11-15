@@ -12,4 +12,11 @@
     <element name = "statusFlag" type = "uint32_t" default = "0" />
     <element name = "npcId" type = "uint16_t" default = "0" />
     <element name = "questId" type = "uint16_t" default = "0" />
+    <!-- One value for each of max HP up, move speed up and down, attack speed
+         up and down (status bits 4, 6, 7, 8, 9) that is set, in that order. -->
+    <element name = "statusValues" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x3D0" default = "{}" />
+    <!-- A summon (status bit 29, life time): its caller's object id and the
+         skill that called it, as the original's Add_ADJ_STATUS writes them. -->
+    <element name = "summonOwner" type = "uint16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x20000000" default = "{}" />
+    <element name = "summonSkill" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x20000000" default = "{}" />
 </packet>

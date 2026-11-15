@@ -14,4 +14,7 @@
     <element name = "questId" type = "uint16_t" default = "0" />
     <element name = "angle" type = "float" default = "0" />
     <element name = "eventStatus" type = "uint16_t" default = "0" />
+    <!-- One value for each of max HP up, move speed up and down, attack speed
+         up and down (status bits 4, 6, 7, 8, 9) that is set, in that order. -->
+    <element name = "statusValues" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x3D0" default = "{}" />
 </packet>

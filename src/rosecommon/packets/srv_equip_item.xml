@@ -3,4 +3,6 @@
     <element name = "slot" type = "int16_t" />
     <includeXml path = "equipped_item.xml" />
     <element name = "item" type = "EquippedItem" />
+    <!-- The run speed after the change (the client always reads it) -->
+    <element name = "move_speed" type = "int16_t" default = "0" />
 </packet>

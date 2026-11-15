@@ -1,13 +1,17 @@
 <packet ePacketType = "PAKWC_TOGGLE_MOVE">
     <element name = "object_id" type = "uint16_t" default = "0" />
-    <element name = "type" type = "ToggleMove" />
+    <!-- What the client's SetCMD_TOGGLE does with it: SIT sits down or stands
+         up; from DRIVE up it is TOGGLE_TYPE_DRIVE + the new MOVE_MODE_*. -->
+    <element name = "type" type = "ToggleMoveState" />
     <element name = "run_speed" type = "uint16_t" default = "0" />
 
-    <simpleType name = "ToggleMove">
+    <simpleType name = "ToggleMoveState">
         <restriction base = "uint8_t">
-            <enumeration value = "RUN" id = "2" />
-            <enumeration value = "SIT" id = "8" />
-            <enumeration value = "DRIVE" id = "9" />
+            <enumeration value = "SIT" id = "1" />
+            <enumeration value = "WALK" id = "2" />
+            <enumeration value = "RUN" id = "3" />
+            <enumeration value = "DRIVE" id = "4" />
+            <enumeration value = "RIDE_ON" id = "6" />
         </restriction>
     </simpleType>
 </packet>
