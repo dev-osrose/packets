@@ -217,7 +217,7 @@ set(IDL_FILES
   packets/srv_set_position.xml
   packets/srv_set_server_var_reply.xml
   packets/srv_set_weight.xml
-  packets/srv_shop_buysell_reply.xml
+  packets/cli_shop_buysell_reply.xml
   packets/srv_shop_close.xml
   packets/srv_shop_list_reply.xml
   packets/srv_shop_open.xml
