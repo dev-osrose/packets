@@ -36,4 +36,7 @@
          up and down (status bits 4, 6, 7, 8, 9) that is set, in that order. -->
     <element name = "statusValues" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x3D0" default = "{}" />
     <element name = "otherName" type = "std::string" ref = "true" default = "none" />
+    <!-- What the sub flag says follows the names: with FLAG_SUB_STORE_MODE
+         (2) a personal shop's int16_t skin and its title (NUL-ended). -->
+    <element name = "tail" type = "uint8_t" occurs = "unbounded" default = "{}" />
 </packet>

@@ -10,7 +10,7 @@
 
     <simpleType name = "CraftResult">
         <restriction base = "uint8_t">
-            <enumeration value = "SUCCESSS" />
+            <enumeration value = "SUCCESS" />
             <enumeration value = "FAIL" />
             <enumeration value = "INVALID_CONDITION" />
             <enumeration value = "MISSING_ITEM" />

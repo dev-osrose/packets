@@ -1,11 +1,16 @@
 <packet ePacketType = "PAKCS_SHOP_OPEN">
+    <include path = "string" system = "true" />
     <includeXml path = "item.xml" />
 
-    <element name = "sell_count" type = "uint8_t" />
-    <element name = "wishlist_count" type = "uint8_t" />
+    <element name = "sell_count" type = "uint8_t" default = "0" />
+    <element name = "wishlist_count" type = "uint8_t" default = "0" />
 
-    <!-- Shop items and wishlist items are stored sequentially -->
-    <element name = "items" type = "ShopItem" occurs="unbounded" default = "none" ref = "true" />
+    <!-- What is for sale (index: the inventory slot), then what is wanted
+         (index: the wishlist slot), as the client's cli_P_STORE_OPEN. -->
+    <element name = "sell_items" type = "ShopItem" occurs = "unbounded" occursRef = "sell_count" default = "{}" />
+    <element name = "wish_items" type = "ShopItem" occurs = "unbounded" occursRef = "wishlist_count" default = "{}" />
+    <!-- The shop's title, after the items. -->
+    <element name = "title" type = "std::string" ref = "true" default = "none" />
 
     <complexType name = "ShopItem">
         <sequence>

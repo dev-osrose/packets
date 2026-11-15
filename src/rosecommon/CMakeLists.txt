@@ -102,9 +102,11 @@ set(IDL_FILES
   packets/cli_set_position.xml
   packets/cli_set_server_var_req.xml
   packets/cli_set_weight_req.xml
+  packets/cli_shop_buy_req.xml
   packets/cli_shop_close.xml
   packets/cli_shop_list_req.xml
   packets/cli_shop_open.xml
+  packets/cli_shop_sell_req.xml
   packets/cli_shout_chat.xml
   packets/cli_skill_cast_position.xml
   packets/cli_skill_cast_self.xml
@@ -120,6 +122,7 @@ set(IDL_FILES
   packets/cli_trade.xml
   packets/cli_use_item.xml
   packets/cli_whisper_chat.xml
+  packets/cli_wishlist_add.xml
   packets/isc_client_status.xml
   packets/isc_alive.xml
   packets/isc_server_register.xml
@@ -214,6 +217,7 @@ set(IDL_FILES
   packets/srv_set_position.xml
   packets/srv_set_server_var_reply.xml
   packets/srv_set_weight.xml
+  packets/srv_shop_buysell_reply.xml
   packets/srv_shop_close.xml
   packets/srv_shop_list_reply.xml
   packets/srv_shop_open.xml
