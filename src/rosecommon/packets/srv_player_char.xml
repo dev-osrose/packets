@@ -31,21 +31,21 @@
     <element name = "level" type = "uint8_t" default = "0" />
     <element name = "ridingItems" type = "EquippedItem" occurs = "RidingItem::MaxRidingItems" ref = "true" default = "{}" />
     <element name = "z" type = "int16_t" default = "0" />
-    <element name = "subFlag" type = "uint32_t" default = "0" />
+    <element name = "subFlag" type = "SubFlag" default = "NONE" />
     <element name = "name" type = "std::string" ref = "true" default = "none" />
     <!-- One value for each of max HP up, move speed up and down, attack speed
          up and down (status bits 4, 6, 7, 8, 9) that is set, in that order. -->
     <element name = "statusValues" type = "int16_t" occurs = "unbounded" occursBits = "statusFlag" occursMask = "0x3D0" default = "{}" />
     <element name = "otherName" type = "std::string" ref = "true" default = "none" />
     <!-- What follows the names, by the sub flag's exact value as the client
-         switches on it: FLAG_SUB_STORE_MODE (2) a personal shop's skin and
-         title, FLAG_SUB_INTRO_CHAT (4) an introduction; any other, nothing. -->
+         switches on it: STORE_MODE a personal shop's skin and title, INTRO_CHAT
+         an introduction; any other, nothing. -->
     <choice selector = "subFlag">
-        <sequence case = "2">
+        <sequence case = "STORE_MODE">
             <element name = "shopSkin" type = "int16_t" />
             <element name = "shopTitle" type = "std::string" />
         </sequence>
-        <sequence case = "4">
+        <sequence case = "INTRO_CHAT">
             <element name = "intro" type = "std::string" />
         </sequence>
         <sequence default = "true" />
@@ -53,4 +53,14 @@
     <!-- The character's clan, when it is in one: at most one entry (the
          client reads it only when its 10 bytes and the name are there). -->
     <element name = "clan" type = "ClanTag" occurs = "unbounded" default = "{}" />
+
+    <simpleType name = "SubFlag">
+        <documentation>What `FLAG_SUB_*` value a player has: the client reads
+            what follows the names by it (its exact value, not as bits).</documentation>
+        <restriction base = "uint32_t">
+            <enumeration value = "NONE" id = "0" />
+            <enumeration value = "STORE_MODE" id = "2" />
+            <enumeration value = "INTRO_CHAT" id = "4" />
+        </restriction>
+    </simpleType>
 </packet>

@@ -11,7 +11,7 @@ endif()
 FetchContent_Declare(
   idl
   GIT_REPOSITORY https://github.com/dev-osrose/IDL.git
-  GIT_TAG d6d5134b68d9442f312aaa85c4ad2cbbcfe0192c
+  GIT_TAG f36b43cb84badba6452a90f75d5cfc40d63248fd
 )
 
 FetchContent_MakeAvailable(idl)
