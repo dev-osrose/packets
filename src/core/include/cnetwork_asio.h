@@ -126,7 +126,14 @@ class CNetwork_Asio : public INetwork {
       std::chrono::milliseconds _timeout = std::chrono::seconds(10)) override;
 
   virtual bool send_data(std::unique_ptr<uint8_t[]> _buffer) override;
-  virtual bool recv_data(uint16_t _size = MAX_PACKET_SIZE) override;
+  /// The receive buffer's size. Its own constant, not MAX_PACKET_SIZE: that
+  /// macro is defaulted here only when undefined, so an includer that
+  /// defines it first (the client, 1024) would see a smaller class than this
+  /// library builds, allocate too little and have the constructor write past
+  /// the end (an intermittent crash in init()).
+  static constexpr uint16_t RECV_BUFFER_SIZE = 0x7FF;
+
+  virtual bool recv_data(uint16_t _size = RECV_BUFFER_SIZE) override;
 
   virtual bool is_active() const override {
     return active_.load(std::memory_order_acquire);
@@ -242,7 +249,7 @@ class CNetwork_Asio : public INetwork {
   std::mutex send_mutex_;
   std::condition_variable recv_condition_;
 
-  uint8_t buffer_[MAX_PACKET_SIZE];
+  uint8_t buffer_[RECV_BUFFER_SIZE];
   uint16_t packet_offset_ = 0;
   uint16_t packet_size_ = 6;
   /// Read by is_active() from every pool thread and written by shutdown() and
