@@ -143,11 +143,15 @@ inline Identity MakeCertificate(const std::filesystem::path& _dir, const std::st
 
   X509_set_pubkey(cert, id.key.get());
 
-  X509_NAME* subject = X509_get_subject_name(cert);
+  // Built apart and copied in: OpenSSL 4 hands back the certificate's own
+  // subject as const.
+  X509_NAME* subject = X509_NAME_new();
   X509_NAME_add_entry_by_txt(subject, "CN", MBSTRING_ASC,
                              reinterpret_cast<const unsigned char*>(_common_name.c_str()), -1, -1,
                              0);
+  X509_set_subject_name(cert, subject);
   X509_set_issuer_name(cert, _issuer ? X509_get_subject_name(_issuer->cert.get()) : subject);
+  X509_NAME_free(subject);
 
   X509V3_CTX ctx;
   X509V3_set_ctx_nodb(&ctx);
