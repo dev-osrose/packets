@@ -1,45 +1,40 @@
 <packet ePacketType = "PAKCS_CHATROOM">
-    <!-- TOOD: Pending IDL union enhancements 7/17/2019 
+    <documentation>A chat room request (`cli_CHAT_ROOM_*`, `CHAT_REQ_*`): a command,
+        then what that command carries, as the client writes it
+        (`Send_cli_CHAT_ROOM_*`). A password is sent only when there is one:
+        it is a list that runs to the end of the packet, empty or one.</documentation>
     <include path = "string" system = "true" />
 
-    <element name = "action" type = "ChatroomAction" />
-    <element name = "data" type = "ChatroomData" />
+    <element name = "action" type = "ChatroomRequest" />
+    <choice selector = "action">
+        <sequence case = "LIST">
+            <element name = "room_type" type = "uint8_t" />
+            <element name = "from_id" type = "uint16_t" />
+        </sequence>
+        <sequence case = "MAKE">
+            <element name = "room_type" type = "uint8_t" />
+            <element name = "max_users" type = "uint8_t" />
+            <element name = "title" type = "std::string" />
+            <element name = "password" type = "std::string" occurs = "unbounded" />
+        </sequence>
+        <sequence case = "JOIN">
+            <element name = "room_type" type = "uint8_t" />
+            <element name = "room_id" type = "uint16_t" />
+            <element name = "password" type = "std::string" occurs = "unbounded" />
+        </sequence>
+        <sequence case = "LEAVE" />
+        <sequence case = "KICK">
+            <element name = "user" type = "uint32_t" />
+        </sequence>
+    </choice>
 
-    <simpleType name = "ChatroomAction">
+    <simpleType name = "ChatroomRequest">
         <restriction base = "uint8_t">
-            <enumeration value = "LIST" />
-            <enumeration value = "CREATE" />
+            <enumeration value = "LIST" id = "1" />
+            <enumeration value = "MAKE" />
             <enumeration value = "JOIN" />
             <enumeration value = "LEAVE" />
             <enumeration value = "KICK" />
         </restriction>
     </simpleType>
-
-    <complexType name = "ChatroomData">
-        <choice>
-            <sequence inline="true">
-                <element name = "create_type" type = "ChatroomType" default = "ChatroomType::DEFAULT" />
-                <element name = "create_max" type = "uint8_t" />
-                <element name = "create_title" type = "std::string" ref = "true" />
-                <element name = "create_password" type = "std::string" ref = "true" />
-            </sequence>
-            <sequence inline="true">
-                <element name = "join_type" type = "ChatroomType" default = "ChatroomType::DEFAULT" />
-                <element name = "join_id" type = "int16_t" />
-                <element name = "join_password" type = "std::string" ref = "true" />
-            </sequence>
-            <sequence inline="true">
-                <element name = "list_type" type = "ChatroomType" default = "ChatroomType::DEFAULT" />
-                <element name = "list_id" type = "int16_t" />
-            </sequence>
-            <element name = "kick_user_hash" type = "uint32_t" />
-        </choice>
-    </complexType>
-
-    <simpleType name = "ChatroomType">
-        <restriction base = "uint8_t">
-            <enumeration value = "DEFAULT" />
-        </restriction>
-    </simpleType>
-    -->
 </packet>
