@@ -1,66 +1,73 @@
 <packet ePacketType = "PAKCC_CHATROOM">
-    <!-- TOOD: Pending IDL union enhancements 7/17/2019 
+    <documentation>What a client is told of chat rooms (`wsv_CHAT_ROOM_*`,
+        `CHAT_REPLY_*`): a result, then what it carries, as the client reads it
+        (`Recv_wsv_CHAT_ROOM`). A member's id is its id in the room; the joined
+        reply lists the members already in, the owner first.</documentation>
     <include path = "string" system = "true" />
 
-    <element name = "action" type = "ChatroomAction" />
-    <element name = "data" type = "ChatroomData" />
+    <element name = "result" type = "ChatroomResult" />
+    <choice selector = "result">
+        <sequence case = "MADE">
+            <element name = "id" type = "uint16_t" />
+            <element name = "title" type = "std::string" />
+        </sequence>
+        <sequence case = "JOINED">
+            <element name = "id" type = "uint16_t" />
+            <element name = "title" type = "std::string" />
+            <element name = "members" type = "ChatroomMember" occurs = "unbounded" />
+        </sequence>
+        <sequence case = "USER_ADDED">
+            <element name = "member" type = "ChatroomMember" />
+        </sequence>
+        <sequence case = "KICKED">
+            <element name = "user_id" type = "uint16_t" />
+        </sequence>
+        <sequence case = "USER_LEFT">
+            <element name = "user_id" type = "uint16_t" />
+        </sequence>
+        <sequence case = "USER_LEFT_NAME">
+            <element name = "name" type = "std::string" />
+        </sequence>
+        <sequence case = "LIST">
+            <element name = "rooms" type = "Chatroom" occurs = "unbounded" occursSize = "uint8_t" />
+        </sequence>
+        <sequence case = "LIST_END">
+            <element name = "rooms" type = "Chatroom" occurs = "unbounded" occursSize = "uint8_t" />
+        </sequence>
+        <sequence default = "true" />
+    </choice>
 
-    <simpleType name = "ChatroomAction">
+    <simpleType name = "ChatroomResult">
         <restriction base = "uint8_t">
-            <enumeration value = "CREATE_SUCCESS" />
-            <enumeration value = "CREATE_FAIL" />
-            <enumeration value = "JOINED" id="0x10" />
+            <enumeration value = "MADE" id = "1" />
+            <enumeration value = "MAKE_FAILED" />
+            <enumeration value = "JOINED" id = "0x10" />
             <enumeration value = "FULL" />
             <enumeration value = "INVALID_PASSWORD" />
-            <enumeration value = "INVALID_ROOM" />
+            <enumeration value = "NOT_FOUND" />
             <enumeration value = "USER_ADDED" />
             <enumeration value = "KICKED" />
             <enumeration value = "USER_LEFT" />
             <enumeration value = "USER_LEFT_NAME" />
-            <enumeration value = "LIST" id ="0x20" />
+            <enumeration value = "LIST" id = "0x20" />
             <enumeration value = "LIST_END" />
-        </restriction>
-    </simpleType>
-
-    <complexType name = "ChatroomData">
-        <choice>
-            <element name = "create_id" type = "uint16_t" />
-            <sequence inline="true">
-                <element name = "join_id" type = "int16_t" />
-                <element name = "join_title" type = "std::string" ref = "true" />
-                <element name = "join_members" type = "ChatroomMember" occurs="unbounded" />
-            </sequence>
-            <sequence inline="true">
-                <element name = "list_type" type = "ChatroomType" default = "ChatroomType::DEFAULT" />
-                <element name = "list_id" type = "int16_t" />
-            </sequence>
-            <element name = "user_left_id" type = "uint16_t" />
-            <element name = "user_left_name" type = "std::string" />
-            <element name = "user_added" type = "ChatroomMember" />
-            <element name = "room_list" type = "Chatroom" occurs="unbounded" occursSize="uint8_t" />
-        </choice>
-    </complexType>
-
-    <simpleType name = "ChatroomType">
-        <restriction base = "uint8_t">
-            <enumeration value = "DEFAULT" />
         </restriction>
     </simpleType>
 
     <complexType name = "ChatroomMember">
         <sequence>
             <element name = "id" type = "uint16_t" />
-            <element name = "name" type = "std::string" ref = "true" />
+            <element name = "name" type = "std::string" />
         </sequence>
     </complexType>
 
+    <!-- tag_CHAT_ROOM: a room in the list. -->
     <complexType name = "Chatroom">
         <sequence>
-            <element name = "type" type = "ChatroomType" />
-            <element name = "id" type = "uint16_t" />
-            <element name = "user_count" type = "uint8_t" />
+            <element name = "room_type" type = "uint8_t" />
+            <element name = "id" type = "int16_t" />
+            <element name = "users" type = "int8_t" />
             <element name = "title" type = "std::string" />
         </sequence>
     </complexType>
-    -->
 </packet>
