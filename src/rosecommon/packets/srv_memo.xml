@@ -1,14 +1,30 @@
 <packet ePacketType = "PAKCC_MEMO">
-    <!-- TOOD: Pending IDL union enhancements 7/17/2019 
+    <documentation>A memo reply (`wsv_MEMO`, `MEMO_REPLY_*`): how many memos
+        are kept, some of them (a page; the client asks again while it
+        expects more), or how sending one went. Each memo carries its id, for
+        deleting it (`PAKCS_MEMO` DELETE).</documentation>
     <include path = "string" system = "true" />
-    
-    <element name = "type" type = "MemoType" />
-    <element name = "data" type = "MemosOrCount" />
 
-    <simpleType name = "MemoType">
+    <element name = "type" type = "MemoReply" />
+    <choice selector = "type">
+        <sequence case = "RECEIVED_COUNT">
+            <element name = "count" type = "int16_t" />
+        </sequence>
+        <sequence case = "CONTENTS">
+            <element name = "memos" type = "Memo" occurs = "unbounded" />
+        </sequence>
+        <sequence case = "SEND_OK" />
+        <sequence case = "INVALID_TARGET" />
+        <sequence case = "NOT_EXIST" />
+        <sequence case = "REFUSED" />
+        <sequence case = "INBOX_FULL" />
+        <sequence case = "INVALID_CONTENT" />
+    </choice>
+
+    <simpleType name = "MemoReply">
         <restriction base = "uint8_t">
-            <enumeration value = "RECEIVED_COUNT" />
-            <enumeration value = "REQUEST_CONTENT" />
+            <enumeration value = "RECEIVED_COUNT" id = "1" />
+            <enumeration value = "CONTENTS" />
             <enumeration value = "SEND_OK" />
             <enumeration value = "INVALID_TARGET" />
             <enumeration value = "NOT_EXIST" />
@@ -20,17 +36,10 @@
 
     <complexType name = "Memo">
         <sequence>
+            <element name = "id" type = "uint32_t" />
             <element name = "date" type = "uint32_t" />
-            <element name = "source" type = "std::string" ref = "true" />
-            <element name = "message" type = "std::string" ref = "true" />
+            <element name = "source" type = "std::string" />
+            <element name = "message" type = "std::string" />
         </sequence>
     </complexType>
-
-    <complexType name = "MemosOrCount">
-        <choice>
-            <element name = "count" type = "uint16_t" />
-            <element name = "memos" type = "Memo" occurs="unbounded" />
-        </choice>
-    </complexType>
-    -->
 </packet>
