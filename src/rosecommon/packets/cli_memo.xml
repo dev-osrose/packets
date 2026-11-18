@@ -1,15 +1,30 @@
 <packet ePacketType = "PAKCS_MEMO">
+    <documentation>A memo request (`cli_MEMO`, `MEMO_REQ_*`): how many memos are
+        kept, their contents, sending one, or deleting one. The server keeps a
+        memo until its recipient deletes it, and sends every kept memo again
+        at each login (osIROSE, 2026-11-18; the original server deleted a memo
+        once sent, the client kept it in a local file).</documentation>
     <include path = "string" system = "true" />
-    
-    <element name = "type" type = "MemoType" />
-    <element name = "target" type = "std::string" ref = "true" />
-    <element name = "message" type = "std::string" ref = "true" />
 
-    <simpleType name = "MemoType">
+    <element name = "type" type = "MemoRequest" />
+    <choice selector = "type">
+        <sequence case = "REQUEST_CONTENT" />
+        <sequence case = "SEND">
+            <element name = "target" type = "std::string" />
+            <element name = "message" type = "std::string" />
+        </sequence>
+        <sequence case = "RECEIVED_COUNT" />
+        <sequence case = "DELETE">
+            <element name = "id" type = "uint32_t" />
+        </sequence>
+    </choice>
+
+    <simpleType name = "MemoRequest">
         <restriction base = "uint8_t">
-            <enumeration value = "REQUEST_CONTENT" />
+            <enumeration value = "REQUEST_CONTENT" id = "1" />
             <enumeration value = "SEND" />
             <enumeration value = "RECEIVED_COUNT" />
+            <enumeration value = "DELETE" />
         </restriction>
     </simpleType>
 </packet>
