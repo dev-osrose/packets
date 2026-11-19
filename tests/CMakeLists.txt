@@ -32,6 +32,7 @@ endmacro()
 # compiled the whole TLS implementation out is not evidence of anything.
 osirose_common_test(SslConfig    test_ssl_config.cpp)
 osirose_common_test(SslHandshake test_ssl_handshake.cpp)
+osirose_common_test(TlsFullDuplex test_tls_full_duplex.cpp)
 
 # tls_test_certs.h calls the OpenSSL API directly to mint throwaway
 # certificates. osIROSE-common-core only links OpenSSL when ENABLE_SSL is on,

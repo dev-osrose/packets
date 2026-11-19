@@ -172,7 +172,7 @@ void CNetwork_Asio::DrainPendingSends() {
     queue_empty = send_queue_.empty();
   }
   if (!queue_empty && !async_write_active_.exchange(true))
-    ProcessSend();
+    asio::dispatch(strand_, [this]() { ProcessSend(); });  // on the strand, see send_data()
 }
 
 bool CNetwork_Asio::connect() {
@@ -497,8 +497,14 @@ bool CNetwork_Asio::send_data(std::unique_ptr<uint8_t[]> _buffer) {
   // async_write the same front element - sending it twice and dropping its
   // successor. The exchange makes the claim atomic; whoever loses simply
   // leaves the packet on the queue for the winner's chain to pick up.
+  //
+  // The pump runs on the strand. send_data() is called from any thread (a
+  // game client's own loop), and an async_write started off the strand races
+  // the read loop inside ssl::stream, which is not thread-safe: packets were
+  // lost and sessions broke (a client's login that never left). dispatch()
+  // runs it inline when the caller is already on the strand.
   if (!async_write_active_.exchange(true))
-    ProcessSend();
+    asio::dispatch(strand_, [this]() { ProcessSend(); });
   return true;
 }
 
