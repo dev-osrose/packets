@@ -34,6 +34,8 @@
 #include <atomic>
 #include <mutex>
 #include <thread>
+#include <future>
+#include <vector>
 #include "threadpool.h"
 
 namespace Core {
@@ -50,7 +52,8 @@ namespace Core {
  * and was constructed against the io_context it owns.  DeleteInstance() destroys
  * that io_context, so it must only be called once every INetwork/CNetwork_Asio
  * object is already gone.  Destroying a socket after the pool has been deleted
- * is a use-after-free.  Scope your servers so they are destroyed first:
+ * is a use-after-free.  Scope your servers so they are destroyed first, or
+ * call Stop() before destroying them (a client freeing its sockets on exit):
  *
  * \code
  *   {
@@ -81,6 +84,21 @@ public:
 
   asio::io_context* Get_IO_Service() { return &io_context_; }
 
+  /// Stop the io_context and wait until no handler runs on the pool's
+  /// threads. Afterwards no completion handler runs again, so sockets (and
+  /// whatever their handlers point at) can be destroyed: their cancelled
+  /// operations are dropped instead of run. The io_context lives on until
+  /// DeleteInstance(). Safe to call twice; called from one of the pool's own
+  /// handlers it only stops (waiting there would wait for itself).
+  void Stop() {
+    std::lock_guard<std::mutex> lock(stop_mutex_);
+    work_guard_.reset();
+    io_context_.stop();
+    if (io_context_.get_executor().running_in_this_thread()) return;
+    for (auto& r : runners_)
+      if (r.valid()) r.wait();
+  }
+
   uint16_t GetThreadCount() const { return static_cast<uint16_t>(thread_count_); }
 
   ~NetworkThreadPool() {
@@ -108,7 +126,7 @@ private:
       , thread_pool_(thread_count_)
   {
     for (size_t i = 0; i < thread_count_; ++i) {
-      thread_pool_.enqueue([this] { io_context_.run(); });
+      runners_.push_back(thread_pool_.enqueue([this] { io_context_.run(); }));
     }
   }
 
@@ -119,6 +137,8 @@ private:
   asio::io_context                                     io_context_;
   asio::executor_work_guard<asio::io_context::executor_type> work_guard_;
   ThreadPool                                           thread_pool_;
+  std::vector<std::future<void>>                       runners_;    //!< one io_context.run() each; Stop() waits on them
+  std::mutex                                           stop_mutex_;
 };
 
 } // namespace Core
