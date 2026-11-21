@@ -1,0 +1,21 @@
+<packet ePacketType = "PAKWC_MOVE_STATE">
+    <documentation>Free movement (osIROSE): a character moving the new way, as
+        its client reported it and the zone accepted it, for the players around
+        (not the mover). Their clients carry it on along heading at speed until
+        the next state, and to the exact place on a stop. Positions in cm;
+        angles 0..65535 for 0..360 degrees.</documentation>
+    <element name = "id" type = "uint16_t">
+        <documentation>The character's object id.</documentation>
+    </element>
+    <element name = "x" type = "float" />
+    <element name = "y" type = "float" />
+    <element name = "z" type = "int16_t" default = "0" />
+    <element name = "facing" type = "uint16_t" default = "0" />
+    <element name = "heading" type = "uint16_t" default = "0" />
+    <element name = "flags" type = "uint8_t" default = "0">
+        <documentation>As PAKCS_MOVE_STATE's: bit 0 moving, bit 1 walking.</documentation>
+    </element>
+    <element name = "speed" type = "uint16_t" default = "0">
+        <documentation>The zone's speed for the character now, cm a second.</documentation>
+    </element>
+</packet>

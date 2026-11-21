@@ -1,0 +1,27 @@
+<packet ePacketType = "PAKCS_MOVE_STATE">
+    <documentation>Free movement (osIROSE): the client moves its own character
+        and tells the zone where it is and how it moves: at once when it starts
+        or stops moving or changes walk / run, while moving on a turn of more
+        than 10 degrees and at least every 200 ms, at most 10 a second. The zone
+        checks it (speed x time, walk data) and relays it, or answers with
+        PAKWC_MOVE_CORRECTION. Positions in cm; angles 0..65535 for 0..360
+        degrees, world space.</documentation>
+    <element name = "seq" type = "uint16_t">
+        <documentation>Counts the client's states (wraps); after a correction
+            the zone ignores states older than the one it corrected.</documentation>
+    </element>
+    <element name = "x" type = "float" />
+    <element name = "y" type = "float" />
+    <element name = "z" type = "int16_t" default = "0">
+        <documentation>The client's height (the zone keeps none; relayed as given).</documentation>
+    </element>
+    <element name = "facing" type = "uint16_t" default = "0">
+        <documentation>Where the character looks.</documentation>
+    </element>
+    <element name = "heading" type = "uint16_t" default = "0">
+        <documentation>Where the character moves.</documentation>
+    </element>
+    <element name = "flags" type = "uint8_t" default = "0">
+        <documentation>Bit 0: moving (0: stopped at x, y). Bit 1: walking (else running).</documentation>
+    </element>
+</packet>
