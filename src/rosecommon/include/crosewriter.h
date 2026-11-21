@@ -80,7 +80,7 @@ class CRosePolicy : public CRoseBasePolicy {
     template <typename T>
     bool write(const T& data) {
       static_assert(std::is_copy_assignable_v<T>, "CRoseWriter doesn't know how to copy assign this type!");
-      return Policy::template write(&m_current, m_buffer, &m_size, data);
+      return Policy::write(&m_current, m_buffer, &m_size, data);
     }
 };
 
