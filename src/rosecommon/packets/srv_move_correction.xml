@@ -1,0 +1,11 @@
+<packet ePacketType = "PAKWC_MOVE_CORRECTION">
+    <documentation>Free movement (osIROSE): the zone refused a PAKCS_MOVE_STATE
+        (too far for the time, not walkable, the player may not move). The
+        client snaps its character to x, y, stops, and sends nothing older than
+        seq.</documentation>
+    <element name = "seq" type = "uint16_t">
+        <documentation>The last state the zone saw from this client.</documentation>
+    </element>
+    <element name = "x" type = "float" />
+    <element name = "y" type = "float" />
+</packet>

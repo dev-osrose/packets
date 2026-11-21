@@ -115,6 +115,7 @@ set(IDL_FILES
   packets/cli_skill_level_req.xml
   packets/cli_srv_select_req.xml
   packets/cli_stop_moving.xml
+  packets/cli_move_state.xml
   packets/cli_stop.xml
   packets/cli_store_trade_req.xml
   packets/cli_teleport_req.xml
@@ -236,6 +237,8 @@ set(IDL_FILES
   packets/srv_srv_select_reply.xml
   packets/srv_stat_add_reply.xml
   packets/srv_stop_moving.xml
+  packets/srv_move_state.xml
+  packets/srv_move_correction.xml
   packets/srv_stop.xml
   packets/srv_store_trade_reply.xml
   packets/srv_switch_server.xml

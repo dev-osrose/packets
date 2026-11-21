@@ -318,6 +318,11 @@
             <enumeration value = "PAKSS_ACCEPT_REPLY" />
             <enumeration value = "EPACKETMAX" />
 
+            <!-- osIROSE free movement: explicit ids, clear of the run above. -->
+            <enumeration value = "PAKCS_MOVE_STATE" id = "0x600" />
+            <enumeration value = "PAKWC_MOVE_STATE" id = "0x601" />
+            <enumeration value = "PAKWC_MOVE_CORRECTION" id = "0x602" />
+
             <enumeration value = "STRESS" id = "0x6F6D" />
         </restriction>
     </simpleType>
